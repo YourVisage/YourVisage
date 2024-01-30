@@ -6,12 +6,14 @@ class CustomScaffold extends StatelessWidget {
   final PreferredSizeWidget? appBar;
   final EdgeInsets? padding;
   final Color? backgroundColor;
+  final Widget? bottomNavigationBar;
   const CustomScaffold({
     Key? key,
     required this.body,
     this.padding,
     this.appBar,
     this.backgroundColor,
+    this.bottomNavigationBar,
   }) : super(key: key);
 
   @override
@@ -28,6 +30,7 @@ class CustomScaffold extends StatelessWidget {
               padding ?? const EdgeInsets.only(left: 16, right: 16, bottom: 30),
           child: body,
         ),
+        bottomNavigationBar: bottomNavigationBar,
       ),
     );
   }

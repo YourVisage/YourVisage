@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 26),
           Button(
             onPressed: () {
-              Navkey.navkey.currentState?.pushNamed(RouterPath.home);
+              Navkey.navkey.currentState?.pushNamed(RouterPath.profile);
             },
             text: 'Login',
           ),

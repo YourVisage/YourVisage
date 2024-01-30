@@ -1,7 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:client/component/text.dart';
 import 'package:client/pages/auth/login/login_page.dart';
-import 'package:client/pages/auth/selfie/camera_page.dart';
 import 'package:client/router/router.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';

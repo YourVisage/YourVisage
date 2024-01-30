@@ -2,7 +2,8 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:client/component/text.dart';
 import 'package:client/pages/auth/login/login_page.dart';
 import 'package:client/pages/auth/selfie/camera_page.dart';
-import 'package:client/pages/home/home_page.dart';
+import 'package:client/pages/main/home/home_page.dart';
+import 'package:client/pages/main/profile/profile_page.dart';
 import 'package:client/router/router_path.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
@@ -28,6 +29,19 @@ class AppRouter {
       case RouterPath.camera:
         return SwipeablePageRoute(
           builder: (_) => const CameraPage(),
+        );
+      case RouterPath.profile:
+        return PageTransition(
+            child: const ProfilePage(),
+            type: PageTransitionType.fade,
+            duration: const Duration(milliseconds: 300),
+            reverseDuration: const Duration(milliseconds: 300));
+      case RouterPath.homeMain:
+        return PageTransition(
+          child: const HomePage(),
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 500),
+          reverseDuration: const Duration(milliseconds: 500),
         );
       default:
         return SwipeablePageRoute(
