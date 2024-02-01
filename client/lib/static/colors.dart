@@ -6,4 +6,5 @@ class ConstantColors {
   static const grey = Color(0xFFABB9CA);
   static const white = Color(0xFFFFFFFF);
   static const error = Color(0xFFDB3030);
+  static const lightBlue = Color(0xFF3F7F9B);
 }

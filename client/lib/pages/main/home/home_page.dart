@@ -2,9 +2,13 @@ import 'package:client/component/bottom_navigation.dart';
 import 'package:client/component/card.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/text.dart';
+import 'package:client/router/router_path.dart';
+import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
+import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,13 +18,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<String> images = [
-    Assets.exampleImage,
-    Assets.exampleImage,
-    Assets.exampleImage,
-    Assets.exampleImage,
-    Assets.exampleImage,
-  ];
+  String initialImage = Assets.exampleImage;
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -49,22 +47,36 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(
-              height: 31,
+              height: 80,
             ),
-            Container(
-                height: 143,
-                padding: const EdgeInsets.only(left: 16),
-                alignment: Alignment.topLeft,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: images.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: const EdgeInsets.only(right: 21),
-                        alignment: Alignment.topLeft,
-                        child: CustomCard(image: images[index]),
-                      );
-                    }))
+            GestureDetector(
+              onTap: () {
+                Navkey.navkey.currentState?.pushNamed(RouterPath.pickImage, arguments: {'initialImage': initialImage});
+              },
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                alignment: Alignment(0, 0.5),
+                width: 221,
+                height: 326,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Color(0xCCD8ECE8),
+                    width: 3,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(47)),
+                  image: DecorationImage(
+                    image: AssetImage(Assets.homeButtonImage),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: CustomCard(
+                  text: AppText.faceSwap,
+                  onTap: () {
+                    print('object');
+                  },
+                ),
+              ),
+            ),
           ],
         ));
   }

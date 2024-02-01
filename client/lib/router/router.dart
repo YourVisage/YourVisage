@@ -3,6 +3,8 @@ import 'package:client/component/text.dart';
 import 'package:client/pages/auth/login/login_page.dart';
 import 'package:client/pages/auth/selfie/camera_page.dart';
 import 'package:client/pages/main/home/home_page.dart';
+import 'package:client/pages/main/home/pickImage/generatedImage_page.dart';
+import 'package:client/pages/main/home/pickImage/pick_image_page.dart';
 import 'package:client/pages/main/profile/profile_page.dart';
 import 'package:client/router/router_path.dart';
 import 'package:client/static/app_text.dart';
@@ -15,8 +17,8 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 class AppRouter {
   static Route<dynamic> generatedRoute(settings) {
-    // Map<dynamic, dynamic>? args;
-    // if (settings.arguments != null) args = settings.arguments;
+    Map<dynamic, dynamic>? args;
+    if (settings.arguments != null) args = settings.arguments;
     switch (settings.name) {
       case RouterPath.login:
         return SwipeablePageRoute(
@@ -31,17 +33,32 @@ class AppRouter {
           builder: (_) => const CameraPage(),
         );
       case RouterPath.profile:
-        return PageTransition(
-            child: const ProfilePage(),
-            type: PageTransitionType.fade,
-            duration: const Duration(milliseconds: 300),
-            reverseDuration: const Duration(milliseconds: 300));
+        return PageTransition(child: const ProfilePage(), type: PageTransitionType.fade, duration: const Duration(milliseconds: 300), reverseDuration: const Duration(milliseconds: 300));
       case RouterPath.homeMain:
         return PageTransition(
           child: const HomePage(),
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 500),
           reverseDuration: const Duration(milliseconds: 500),
+        );
+      case RouterPath.pickImage:
+        return PageTransition(
+          child: PickImagePage(
+            initialImage: _getValueByKey(args, 'initialImage'),
+          ),
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          reverseDuration: const Duration(milliseconds: 300),
+        );
+      case RouterPath.generatedImage:
+        return PageTransition(
+          child: GeneratedImagePage(
+            initialImage: _getValueByKey(args, 'initialImage'),
+            targetImage: _getValueByKey(args, 'targetImage'),
+          ),
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          reverseDuration: const Duration(milliseconds: 300),
         );
       default:
         return SwipeablePageRoute(
@@ -77,11 +94,11 @@ class AppRouter {
   }
 }
 
-// _getValueByKey(Map<dynamic, dynamic>? args, String key) {
-//   try {
-//     return args != null ? args[key] : null;
-//   } catch (e) {
-//     print(e);
-//   }
-//   return null;
-// }
+_getValueByKey(Map<dynamic, dynamic>? args, String key) {
+  try {
+    return args != null ? args[key] : null;
+  } catch (e) {
+    print(e);
+  }
+  return null;
+}

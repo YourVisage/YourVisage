@@ -5,4 +5,6 @@ class RouterPath {
   static const String camera = '/camera';
   static const String profile = '/profile';
   static const String homeMain = '/homeMain';
+  static const String pickImage = '/prickImage';
+  static const String generatedImage = '/generatedImage';
 }
