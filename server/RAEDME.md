@@ -195,7 +195,7 @@ project
 
 - CI/CD github self hosted action ашиглаж байгаа учир runner server дээр ажиллаж байх ёстой.
 
-- Kubernetes server дээр Deployment болон Service-ийг yaml дээр бичнэ.
+
 
 ## ⛏️ Ашигласан технологи <a name = "built_using"></a>
 
