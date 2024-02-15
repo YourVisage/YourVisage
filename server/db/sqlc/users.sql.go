@@ -52,3 +52,60 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	)
 	return i, err
 }
+
+const getUser = `-- name: GetUser :one
+
+SELECT
+    "Id", "FirstName", "LastName", "Email", "Password", "CreatedAt"
+FROM
+    "users"
+WHERE
+    "Id" = $1 :: INT
+LIMIT 1
+`
+
+func (q *Queries) GetUser(ctx context.Context, id int32) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUser, id)
+	var i User
+	err := row.Scan(
+		&i.Id,
+		&i.FirstName,
+		&i.LastName,
+		&i.Email,
+		&i.Password,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updateUser = `-- name: UpdateUser :one
+
+UPDATE
+    "users"
+SET
+    "Password" = $1 :: VARCHAR(100)
+WHERE 
+    "Id" = $2 :: INT
+    AND "Email" = $3 :: VARCHAR(100)
+RETURNING "Id", "FirstName", "LastName", "Email", "Password", "CreatedAt"
+`
+
+type UpdateUserParams struct {
+	Password string
+	Id       int32
+	Email    string
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUser, arg.Password, arg.Id, arg.Email)
+	var i User
+	err := row.Scan(
+		&i.Id,
+		&i.FirstName,
+		&i.LastName,
+		&i.Email,
+		&i.Password,
+		&i.CreatedAt,
+	)
+	return i, err
+}
