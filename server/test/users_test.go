@@ -40,7 +40,7 @@ func TestRandomUser(t *testing.T) {
 }
 
 func TestGetUser(t *testing.T) {
-
+	 
 }
 
 func TestUpdateUser(t *testing.T) {
