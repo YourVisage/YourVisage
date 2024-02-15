@@ -15,8 +15,9 @@
 Your Visage Ai image Generator систем.
 
 
-## Ажилуулах <a name = "run"></a>
 <details>
+
+<summary> Ажилуулах <a name = "run"></a></summary>
 
 ## YourVisage ажилуулах заавар
 
