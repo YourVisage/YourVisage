@@ -16,13 +16,19 @@ Your Visage Ai image Generator систем.
 
 
 ## Ажилуулах <a name = "run"></a>
+<details>
+<summary>YourVisage ажилуулах заавар</summary>
 
-	<summary>YourVisage ажилуулах заавар</summary>
 #### Client directory-г ажилуулахдаа
-#### 1. flutter pub get
-#### 2. flutter run
-#### Server directory-г ажилуулахдаа 
-#### 1. go mod tidy хийж package татаж авна.
-#### 2. make test хийж Тест file uudig ажилуулж тестлэнэ.
-#### 3. make run хийж ажилуулна.
+```sh 
+flutter pub get
+flutter run
+```
 
+#### Server directory-г ажилуулахдаа 
+```sh
+go mod tidy хийж package татаж авна.
+make test хийж Тест file uudig ажилуулж тестлэнэ.
+make run хийж ажилуулна.
+```
+</details>
