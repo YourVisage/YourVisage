@@ -20,15 +20,15 @@ Your Visage Ai image Generator систем.
 
 ## YourVisage ажилуулах заавар
 
-<sumamary>Client directory-г ажилуулахдаа</summary>
+#### Client directory-г ажилуулахдаа</summary>
 
 ```sh 
 flutter pub get
 flutter run
 ```
 
-<summary> Server directory-г ажилуулахдаа </summary>
- 
+#### Server directory-г ажилуулахдаа
+
 ```sh
 go mod tidy хийж package татаж авна.
 make test хийж Тест file uudig ажилуулж тестлэнэ.
