@@ -8,7 +8,6 @@ import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
 import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

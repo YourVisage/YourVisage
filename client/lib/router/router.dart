@@ -2,6 +2,7 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:client/component/text.dart';
 import 'package:client/pages/auth/login/login_page.dart';
 import 'package:client/pages/auth/selfie/camera_page.dart';
+import 'package:client/pages/main/analyze/analazy.page.dart';
 import 'package:client/pages/main/home/home_page.dart';
 import 'package:client/pages/main/home/pickImage/generatedImage_page.dart';
 import 'package:client/pages/main/home/pickImage/pick_image_page.dart';
@@ -56,6 +57,13 @@ class AppRouter {
             initialImage: _getValueByKey(args, 'initialImage'),
             targetImage: _getValueByKey(args, 'targetImage'),
           ),
+          type: PageTransitionType.fade,
+          duration: const Duration(milliseconds: 300),
+          reverseDuration: const Duration(milliseconds: 300),
+        );
+      case RouterPath.analyze:
+        return PageTransition(
+          child: AnalazyPage(),
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),
           reverseDuration: const Duration(milliseconds: 300),

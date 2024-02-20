@@ -10,8 +10,7 @@ import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 class BottomNavigation extends StatefulWidget {
   final int currentMenu;
 
-  const BottomNavigation({Key? key, required this.currentMenu})
-      : super(key: key);
+  const BottomNavigation({Key? key, required this.currentMenu}) : super(key: key);
 
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
@@ -27,40 +26,27 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    // ThemeData theme = Provider.of<ThemeNotifier>(context, listen: true).getTheme();
     double stdCutoutWidthDown = MediaQuery.of(context).viewPadding.bottom;
     return Container(
-      padding: EdgeInsets.only(
-          top: ResponsiveFlutter.of(context).hp(1),
-          bottom: ResponsiveFlutter.of(context).hp(2)),
-      margin: EdgeInsets.only(
-          bottom: stdCutoutWidthDown >= 38 ? stdCutoutWidthDown : 0),
+      padding: EdgeInsets.only(top: ResponsiveFlutter.of(context).hp(1), bottom: ResponsiveFlutter.of(context).hp(2)),
+      margin: EdgeInsets.only(bottom: stdCutoutWidthDown >= 38 ? stdCutoutWidthDown : 0),
       height: ResponsiveFlutter.of(context).hp(8),
       width: double.maxFinite,
-      decoration: BoxDecoration(
-          border: const Border(top: BorderSide(color: ConstantColors.grey)),
-          // borderRadius: BorderRadius.circular(ResponsiveFlutter.of(context).fontSize(2)),
-          color: widget.currentMenu == 2
-              ? ConstantColors.black
-              : ConstantColors.black),
-      // boxShadow: [BoxShadow(color: theme.colorScheme.darkGrey, offset: const Offset(0, 0), blurRadius: 10, spreadRadius: 0, blurStyle: BlurStyle.solid), BoxShadow(color: theme.colorScheme.darkGrey, offset: const Offset(0, 0), blurRadius: 10, spreadRadius: 0, blurStyle: BlurStyle.solid)]),
+      decoration: BoxDecoration(border: const Border(top: BorderSide(color: ConstantColors.grey)), color: widget.currentMenu == 3 ? ConstantColors.black : ConstantColors.black),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        // mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
             child: _bottomNavItem(
               1,
               onTap: (() async {
                 if (widget.currentMenu != 1) {
-                  Navkey.navkey.currentState?.pushNamedAndRemoveUntil(
-                      RouterPath.homeMain, (route) => false);
+                  Navkey.navkey.currentState?.pushNamedAndRemoveUntil(RouterPath.homeMain, (route) => false);
                 }
 
                 setState(() {});
               }),
-              asset:
-                  widget.currentMenu == 2 ? Assets.dashboard : Assets.dashboard,
+              asset: widget.currentMenu == 2 ? Assets.dashboard : Assets.dashboard,
             ),
           ),
           Expanded(
@@ -68,8 +54,20 @@ class _BottomNavigationState extends State<BottomNavigation> {
               2,
               onTap: (() async {
                 if (widget.currentMenu != 2) {
-                  Navkey.navkey.currentState?.pushNamedAndRemoveUntil(
-                      RouterPath.profile, (route) => false);
+                  Navkey.navkey.currentState?.pushNamedAndRemoveUntil(RouterPath.analyze, (route) => false);
+                }
+
+                setState(() {});
+              }),
+              asset: widget.currentMenu == 3 ? Assets.analyze : Assets.analyze,
+            ),
+          ),
+          Expanded(
+            child: _bottomNavItem(
+              3,
+              onTap: (() async {
+                if (widget.currentMenu != 3) {
+                  Navkey.navkey.currentState?.pushNamedAndRemoveUntil(RouterPath.profile, (route) => false);
                 }
 
                 setState(() {});
@@ -87,8 +85,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     Function()? onTap,
     String asset = '',
   }) {
-    _navBarItemWidth =
-        _navBarItemWidth ?? (MediaQuery.of(context).size.width) / 5;
+    _navBarItemWidth = _navBarItemWidth ?? (MediaQuery.of(context).size.width) / 5;
 
     return ZoomTapAnimation(
       end: 0.8,
@@ -99,18 +96,14 @@ class _BottomNavigationState extends State<BottomNavigation> {
         width: _navBarItemWidth,
         color: ConstantColors.black,
         child: Center(
-          child: index == 2
+          child: index == 3
               ? SvgPicture.asset(
                   asset,
-                  color: widget.currentMenu == index
-                      ? ConstantColors.primary
-                      : ConstantColors.grey,
+                  color: widget.currentMenu == index ? ConstantColors.primary : ConstantColors.grey,
                 )
               : SvgPicture.asset(
                   asset,
-                  color: widget.currentMenu == index
-                      ? ConstantColors.primary
-                      : ConstantColors.grey,
+                  color: widget.currentMenu == index ? ConstantColors.primary : ConstantColors.grey,
                 ),
         ),
       ),
