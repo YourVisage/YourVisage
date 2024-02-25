@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:client/component/bottom_navigation.dart';
 import 'package:client/component/card.dart';
 import 'package:client/component/custom_scaffold.dart';
@@ -10,14 +12,14 @@ import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final File? initialImage;
+  const HomePage({Key? key, this.initialImage}) : super(key: key);
 
   @override
   State createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  String initialImage = Assets.exampleImage;
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -50,7 +52,8 @@ class _HomePageState extends State<HomePage> {
             ),
             GestureDetector(
               onTap: () {
-                Navkey.navkey.currentState?.pushNamed(RouterPath.pickImage, arguments: {'initialImage': initialImage});
+                Navkey.navkey.currentState?.pushNamed(RouterPath.pickImage,
+                    arguments: {'initialImage': widget.initialImage});
               },
               child: Container(
                 padding: const EdgeInsets.all(2),

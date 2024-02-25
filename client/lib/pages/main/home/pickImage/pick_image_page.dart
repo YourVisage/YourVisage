@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PickImagePage extends StatefulWidget {
-  final String? initialImage;
+  final File? initialImage;
   const PickImagePage({Key? key, this.initialImage}) : super(key: key);
   @override
   State createState() => _PickImagePageState();

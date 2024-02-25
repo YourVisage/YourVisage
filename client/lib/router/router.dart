@@ -34,10 +34,16 @@ class AppRouter {
           builder: (_) => const CameraPage(),
         );
       case RouterPath.profile:
-        return PageTransition(child: const ProfilePage(), type: PageTransitionType.fade, duration: const Duration(milliseconds: 300), reverseDuration: const Duration(milliseconds: 300));
+        return PageTransition(
+            child: const ProfilePage(),
+            type: PageTransitionType.fade,
+            duration: const Duration(milliseconds: 300),
+            reverseDuration: const Duration(milliseconds: 300));
       case RouterPath.homeMain:
         return PageTransition(
-          child: const HomePage(),
+          child: HomePage(
+            initialImage: _getValueByKey(args, 'initialImage'),
+          ),
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 500),
           reverseDuration: const Duration(milliseconds: 500),

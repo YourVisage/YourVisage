@@ -8,7 +8,7 @@ import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
 
 class GeneratedImagePage extends StatefulWidget {
-  final String? initialImage;
+  final File? initialImage;
   final File? targetImage;
   const GeneratedImagePage({
     Key? key,
@@ -41,11 +41,13 @@ class _GeneratedImagePageState extends State<GeneratedImagePage> {
           children: [
             Column(
               children: [
-                if (widget.targetImage != null) Image.file(widget.targetImage!, width: 200),
+                if (widget.targetImage != null)
+                  Image.file(widget.targetImage!, width: 200),
                 SizedBox(
                   height: 20,
                 ),
-                if (widget.initialImage != null) Image.asset(widget.initialImage!, width: 200),
+                if (widget.initialImage != null)
+                  Image.file(widget.initialImage!, width: 200),
                 SizedBox(
                   height: 40,
                 ),

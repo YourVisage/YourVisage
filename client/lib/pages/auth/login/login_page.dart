@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/custum_text_input.dart';
@@ -9,6 +11,7 @@ import 'package:client/static/colors.dart';
 import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -20,6 +23,25 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  File? pickedFile;
+  Future<void> _pickImages(ImageSource source) async {
+    final XFile? returnImage = await ImagePicker().pickImage(source: source);
+
+    if (returnImage == null) {
+      return;
+    }
+
+    setState(() {
+      pickedFile = File(returnImage.path);
+    });
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    await _pickImages(ImageSource.camera);
+    Navkey.navkey.currentState?.pushNamed(RouterPath.homeMain,
+        arguments: {'initialImage': pickedFile});
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -58,9 +80,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           const SizedBox(height: 26),
           Button(
-            onPressed: () {
-              Navkey.navkey.currentState?.pushNamed(RouterPath.profile);
-            },
+            onPressed: _pickImageFromCamera,
             text: 'Login',
           ),
           const SizedBox(height: 26),
