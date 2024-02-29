@@ -24,15 +24,24 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   File? pickedFile;
+  bool _isLoading = false;
   Future<void> _pickImages(ImageSource source) async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final XFile? returnImage = await ImagePicker().pickImage(source: source);
 
     if (returnImage == null) {
+      setState(() {
+        _isLoading = false;
+      });
       return;
     }
 
     setState(() {
       pickedFile = File(returnImage.path);
+      _isLoading = false;
     });
   }
 
@@ -163,7 +172,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ],
-          )
+          ),
+          _isLoading ? CircularProgressIndicator() : Container(),
         ],
       ),
     );
