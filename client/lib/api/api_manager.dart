@@ -3,8 +3,10 @@ import 'package:client/api/htpp_path.dart';
 import 'package:client/api/http_utils.dart';
 import 'package:client/model/fake_detect_model.dart';
 import 'package:client/model/image_picker_modal.dart';
+import 'package:dio/dio.dart';
 
 class ApiManager {
+  static final Dio _dio = Dio();
   static Future<SwapImageResponse> swappingImage(
       SwapImageRequest request) async {
     var res = SwapImageResponse.fromJson(await httpUtils.sendRequest(

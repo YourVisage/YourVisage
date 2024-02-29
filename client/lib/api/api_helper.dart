@@ -4,7 +4,7 @@ import '../helpers/shared_pref.dart';
 
 class ApiHelper {
   // static const String baseUrl = 'http://192.168.2.52:3333/'; // Test/
-  static const String baseUrl = 'http://192.168.1.55:8000/'; // Production/
+  static const String baseUrl = 'http://10.0.2.2:8000/'; // Production/
   // static const String baseUrl = 'http://192.168.1.209:3000/'; // Local/
 
   static Map<String, String> getHttpHeaders() {
