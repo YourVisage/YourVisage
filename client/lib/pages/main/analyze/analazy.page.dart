@@ -20,6 +20,9 @@ class AnalazyPage extends StatefulWidget {
 class _AnalazyPageState extends State<AnalazyPage> {
   File? pickedFile;
   double? aiGenerated; // Declare aiGenerated variable here
+  void initState() {
+    super.initState();
+  }
 
   Future<void> _pickImageFromGallery() async {
     final XFile? returnImage =
@@ -44,8 +47,10 @@ class _AnalazyPageState extends State<AnalazyPage> {
         // Successful response
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
-        aiGenerated =
-            responseData['type']['ai_generated']; // Assign value to aiGenerated
+        setState(() {
+          aiGenerated = responseData['type']
+              ['ai_generated']; // Assign value to aiGenerated
+        });
       } else {
         // Handle non-200 status code
         print('Error: ${response.statusCode}');
@@ -87,7 +92,7 @@ class _AnalazyPageState extends State<AnalazyPage> {
             if (pickedFile != null)
               Image.file(
                 pickedFile!,
-                width: 350,
+                width: 200,
               ),
             const SizedBox(
               height: 50,

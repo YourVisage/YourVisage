@@ -61,7 +61,6 @@ class AppRouter {
         return PageTransition(
           child: GeneratedImagePage(
             initialImage: _getValueByKey(args, 'initialImage'),
-            targetImage: _getValueByKey(args, 'targetImage'),
           ),
           type: PageTransitionType.fade,
           duration: const Duration(milliseconds: 300),

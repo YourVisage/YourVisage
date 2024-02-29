@@ -1,19 +1,18 @@
-import 'dart:io';
-
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/colors.dart';
 import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 class GeneratedImagePage extends StatefulWidget {
-  final File? initialImage;
-  final File? targetImage;
+  final String? initialImage;
   const GeneratedImagePage({
     Key? key,
     this.initialImage,
-    this.targetImage,
   }) : super(key: key);
 
   @override
@@ -23,6 +22,7 @@ class GeneratedImagePage extends StatefulWidget {
 class _GeneratedImagePageState extends State<GeneratedImagePage> {
   @override
   Widget build(BuildContext context) {
+    final imageData = base64Decode(widget.initialImage!.split(',').last);
     return CustomScaffold(
       appBar: AppBar(
         backgroundColor: ConstantColors.black,
@@ -39,20 +39,14 @@ class _GeneratedImagePageState extends State<GeneratedImagePage> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            Column(
-              children: [
-                if (widget.targetImage != null)
-                  Image.file(widget.targetImage!, width: 200),
-                SizedBox(
-                  height: 20,
+            Column(children: [
+              if (widget.initialImage!.isNotEmpty)
+                Image.memory(
+                  imageData,
+                  fit: BoxFit.cover,
+                  width: 200,
                 ),
-                if (widget.initialImage != null)
-                  Image.file(widget.initialImage!, width: 200),
-                SizedBox(
-                  height: 40,
-                ),
-              ],
-            ),
+            ]),
             Spacer(),
             Container(
               padding: const EdgeInsets.all(10),

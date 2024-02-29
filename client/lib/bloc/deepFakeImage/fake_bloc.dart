@@ -15,6 +15,7 @@ Future<void> _fakeSwap(FakeImageEvent event, Emitter<FakeState> emit) async {
   try {
     emit(FakeLoading());
     var res = await ApiManager.swappingImage(event.request);
+    print(res);
     if (res.code == ResponseCode.Success) {
       emit(FakeImageSuccess(response: res));
     } else if (res.code == ResponseCode.Error) {

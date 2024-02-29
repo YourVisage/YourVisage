@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _pickImageFromCamera() async {
-    await _pickImages(ImageSource.camera);
+    await _pickImages(ImageSource.gallery);
     Navkey.navkey.currentState?.pushNamed(RouterPath.homeMain,
         arguments: {'initialImage': pickedFile});
   }
