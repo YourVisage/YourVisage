@@ -17,6 +17,7 @@ Future<void> _fakeSwap(FakeImageEvent event, Emitter<FakeState> emit) async {
     var res = await ApiManager.swappingImage(event.request);
     print(res);
     if (res.code == ResponseCode.Success) {
+      print(res.resultImage);
       emit(FakeImageSuccess(response: res));
     } else if (res.code == ResponseCode.Error) {
       emit(FakeImageFailure(message: res.message ?? ''));
@@ -28,26 +29,18 @@ Future<void> _fakeSwap(FakeImageEvent event, Emitter<FakeState> emit) async {
 
 Future<void> _detectImage(
     DetectImageEvent event, Emitter<FakeState> emit) async {
-  print('res-------------------------------------');
-
   try {
     emit(FakeLoading());
-    print('res-------------------------------------');
-
     var res = await ApiManager.detectImage(event.request);
     print(res);
     if (res != null) {
-      // Check if the response is not null
       print('null');
-      if (res.status == "success") {
-        // If the status is success, emit DetectImageSuccess
+      if (res.status == ResponseCode.Success) {
         emit(DetectImageSuccess(response: res));
       } else {
-        // If the status is not success, emit DetectImageFailure
         emit(DetectImageFailure(message: "Failed to detect image"));
       }
     } else {
-      // If the response is null, emit DetectImageFailure
       emit(DetectImageFailure(message: "Failed to detect image"));
     }
   } catch (e) {

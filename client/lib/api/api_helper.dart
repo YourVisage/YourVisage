@@ -12,8 +12,7 @@ class ApiHelper {
     headers.addAll({
       'Connection': 'Close',
       'Accept': 'application/json',
-      'Accept-Charset': 'utf-8',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     });
 
     return headers;

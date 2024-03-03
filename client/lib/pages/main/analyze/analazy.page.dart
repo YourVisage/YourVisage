@@ -6,6 +6,7 @@ import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/text.dart';
 import 'package:client/static/colors.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +22,9 @@ class _AnalazyPageState extends State<AnalazyPage> {
   File? pickedFile;
   double? aiGenerated; // Declare aiGenerated variable here
   void initState() {
+    setState(() {
+      aiGenerated;
+    });
     super.initState();
   }
 
@@ -36,27 +40,32 @@ class _AnalazyPageState extends State<AnalazyPage> {
       pickedFile = File(returnImage.path);
     });
 
-    final uri = Uri.parse('http://10.0.2.2:8000/api/detect');
-    final request = http.MultipartRequest('POST', uri)
-      ..files.add(await http.MultipartFile.fromPath('file', pickedFile!.path));
-
     try {
-      final response = await http.Response.fromStream(await request.send());
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(pickedFile!.path,
+            filename: 'image.jpg'),
+      });
+
+      final response = await Dio().post(
+        'http://10.0.2.2:8000/api/detect',
+        data: formData,
+        options: Options(
+          headers: {
+            HttpHeaders.contentTypeHeader: 'multipart/form-data',
+          },
+        ),
+      );
 
       if (response.statusCode == 200) {
-        // Successful response
-        final responseData = jsonDecode(response.body);
+        final responseData = response.data;
         print('Response data: $responseData');
         setState(() {
-          aiGenerated = responseData['type']
-              ['ai_generated']; // Assign value to aiGenerated
+          aiGenerated = responseData['type']['ai_generated'];
         });
       } else {
-        // Handle non-200 status code
         print('Error: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle any errors that occurred during the request
       print('Error occurred: $e');
     }
   }

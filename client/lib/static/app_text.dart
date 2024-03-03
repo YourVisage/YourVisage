@@ -3,4 +3,5 @@ class AppText {
   static const String emailHint = 'нэр@жишээ.com';
   static const String faceSwap = 'Царай солих';
   static const String save = 'Хадгалах';
+  static const String please_wait = 'Түр хүлээнэ үү \n уншиж байна';
 }
