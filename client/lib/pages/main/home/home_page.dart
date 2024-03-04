@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:client/api/firebase_auth.dart';
 import 'package:client/component/bottom_navigation.dart';
+import 'package:client/component/button.dart';
 import 'package:client/component/card.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/text.dart';
@@ -10,6 +12,7 @@ import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
 import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   final File? initialImage;
@@ -79,6 +82,9 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            Button(
+                onPressed: () =>
+                    context.read<AuthenticationService>().signout())
           ],
         ));
   }

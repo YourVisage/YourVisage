@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "642212907515",
+    "project_id": "deepface-a1dfd",
+    "storage_bucket": "deepface-a1dfd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642212907515:android:823d6c633c41134e26e35e",
+        "android_client_info": {
+          "package_name": "com.example.client"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7KhTVu50gSzbH7D3hgo8i5YikZfsXLZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

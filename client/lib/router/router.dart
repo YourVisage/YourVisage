@@ -27,7 +27,7 @@ class AppRouter {
         );
       case RouterPath.home:
         return SwipeablePageRoute(
-          builder: (_) => const HomePage(),
+          builder: (_) => HomePage(),
         );
       case RouterPath.camera:
         return SwipeablePageRoute(

@@ -1,15 +1,20 @@
 import 'dart:io';
 
+import 'package:client/api/firebase_auth.dart';
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/custum_text_input.dart';
 import 'package:client/component/text.dart';
+import 'package:client/helpers/utils.dart';
 import 'package:client/router/router_path.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
 import 'package:client/static/constant.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -46,9 +51,23 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _pickImageFromCamera() async {
-    await _pickImages(ImageSource.gallery);
-    Navkey.navkey.currentState?.pushNamed(RouterPath.homeMain,
-        arguments: {'initialImage': pickedFile});
+    // await _pickImages(ImageSource.gallery);
+    // final auth = FirebaseAuth.instance;
+    // try {
+    //   UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+    //     email: _emailController.text.toString().trim(),
+    //     password: _passwordController.text,
+    //   );
+    //   if (userCredential.user != null) {
+    //     Navkey.navkey.currentState?.pushNamed(
+    //       RouterPath.homeMain,
+    //       arguments: {'initialImage': pickedFile},
+    //     );
+    //   }
+    // } catch (e) {}
+    context.read<AuthenticationService>().signIn(
+        email: _emailController.text.toString().trim(),
+        password: _passwordController.text);
   }
 
   @override
@@ -89,7 +108,12 @@ class _LoginPageState extends State<LoginPage> {
           ),
           const SizedBox(height: 26),
           Button(
-            onPressed: _pickImageFromCamera,
+            onPressed: () {
+              if (_emailController.text.isNotEmpty &&
+                  _passwordController.text.length > 6) {
+                _pickImageFromCamera();
+              }
+            },
             text: 'Login',
           ),
           const SizedBox(height: 26),
@@ -137,6 +161,8 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               GestureDetector(
+                onTap: () =>
+                    context.read<AuthenticationService>().signInWithGoogle(),
                 child: Container(
                   width: 60,
                   height: 60,
