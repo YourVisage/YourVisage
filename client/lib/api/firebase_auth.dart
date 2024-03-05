@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:client/helpers/utils.dart';
+import 'package:client/router/router_path.dart';
+import 'package:client/static/constant.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -11,11 +16,29 @@ class AuthenticationService {
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
   Future<String> signIn(
-      {required String email, required String password}) async {
+      {required String email,
+      required String password,
+      File? initialImage}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+      initialImage != ''
+          ? Navkey.navkey.currentState?.pushNamed(RouterPath.home, arguments: {
+              'initialImage': initialImage,
+            })
+          : Utils().showToastAlert('Зураг олдсонгүй');
       return 'Sign in';
+    } on FirebaseAuthException catch (e) {
+      return e.message.toString();
+    }
+  }
+
+  Future<String> signUp(
+      {required String email, required String password}) async {
+    try {
+      await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return 'Sign up';
     } on FirebaseAuthException catch (e) {
       return e.message.toString();
     }
@@ -49,5 +72,7 @@ class AuthenticationService {
 
   Future<void> signout() async {
     await _firebaseAuth.signOut();
+    Navkey.navkey.currentState
+        ?.pushNamedAndRemoveUntil(RouterPath.onboardingPage, (route) => false);
   }
 }

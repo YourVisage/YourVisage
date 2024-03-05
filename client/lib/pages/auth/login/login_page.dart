@@ -11,8 +11,6 @@ import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
 import 'package:client/static/constant.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -30,6 +28,18 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   File? pickedFile;
   bool _isLoading = false;
+  String? email;
+  String? password = '';
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      email = _emailController.text;
+      password = _passwordController.text;
+    });
+  }
+
   Future<void> _pickImages(ImageSource source) async {
     setState(() {
       _isLoading = true;
@@ -51,23 +61,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _pickImageFromCamera() async {
-    // await _pickImages(ImageSource.gallery);
-    // final auth = FirebaseAuth.instance;
-    // try {
-    //   UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-    //     email: _emailController.text.toString().trim(),
-    //     password: _passwordController.text,
-    //   );
-    //   if (userCredential.user != null) {
-    //     Navkey.navkey.currentState?.pushNamed(
-    //       RouterPath.homeMain,
-    //       arguments: {'initialImage': pickedFile},
-    //     );
-    //   }
-    // } catch (e) {}
-    context.read<AuthenticationService>().signIn(
+    final result = await context.read<AuthenticationService>().signIn(
         email: _emailController.text.toString().trim(),
-        password: _passwordController.text);
+        password: _passwordController.text.toString().trim(),
+        initialImage: pickedFile);
+    print('-------------------------- ${result}');
+    if (result == 'Sign in') await _pickImages(ImageSource.gallery);
   }
 
   @override
@@ -203,5 +202,12 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }
