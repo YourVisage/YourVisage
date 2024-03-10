@@ -17,6 +17,7 @@ class Button extends StatelessWidget {
   final BorderRadius? bRadius;
   final double? fontSize;
   final Color? backgroundColor;
+  final Color? disabledColor;
 
   const Button({
     Key? key,
@@ -32,6 +33,7 @@ class Button extends StatelessWidget {
     this.bRadius,
     this.fontSize,
     this.backgroundColor,
+    this.disabledColor,
   }) : super(key: key);
 
   @override
@@ -42,7 +44,9 @@ class Button extends StatelessWidget {
         elevation: 0,
         minimumSize: const Size.fromHeight(40),
         shape: RoundedRectangleBorder(
-            borderRadius: bRadius ?? BorderRadius.circular(8)));
+            borderRadius: bRadius ?? BorderRadius.circular(8)),
+        disabledBackgroundColor:
+            disabledColor ?? ConstantColors.white.withOpacity(0.5));
     return Container(
       padding: EdgeInsets.zero,
       margin: margin ?? const EdgeInsets.only(bottom: 10),

@@ -28,4 +28,8 @@ class Utils {
       reverseAnimationDuration: const Duration(milliseconds: 1000),
     );
   }
+
+  bool isSame(String str1, String str2) {
+    return str1 == str2;
+  }
 }

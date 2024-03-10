@@ -12,6 +12,8 @@ class CustomScaffold extends StatelessWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final Widget? drawer;
   final Color? appBarColor;
+  final Widget? floatingActionButton;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
 
   const CustomScaffold({
     Key? key,
@@ -24,11 +26,16 @@ class CustomScaffold extends StatelessWidget {
     this.scaffoldKey,
     this.drawer,
     this.appBarColor,
+    this.floatingActionButton,
+    this.floatingActionButtonLocation,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: floatingActionButtonLocation ??
+          FloatingActionButtonLocation.centerDocked,
       resizeToAvoidBottomInset: false,
       key: scaffoldKey,
       backgroundColor: backgroundColor ?? ConstantColors.black,
@@ -43,7 +50,8 @@ class CustomScaffold extends StatelessWidget {
           Utils.hideKeyboard(context);
         },
         child: Container(
-          padding: padding ?? const EdgeInsets.only(left: 16, right: 16, bottom: 30),
+          padding:
+              padding ?? const EdgeInsets.only(left: 16, right: 16, bottom: 30),
           child: body,
         ),
       ),

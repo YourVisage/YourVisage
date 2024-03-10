@@ -8,4 +8,5 @@ class RouterPath {
   static const String pickImage = '/prickImage';
   static const String generatedImage = '/generatedImage';
   static const String analyze = '/analyze';
+  static const String register = '/register';
 }

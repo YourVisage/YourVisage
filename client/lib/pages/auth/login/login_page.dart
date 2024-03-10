@@ -61,12 +61,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _pickImageFromCamera() async {
-    final result = await context.read<AuthenticationService>().signIn(
-        email: _emailController.text.toString().trim(),
-        password: _passwordController.text.toString().trim(),
-        initialImage: pickedFile);
-    print('-------------------------- ${result}');
-    if (result == 'Sign in') await _pickImages(ImageSource.gallery);
+    await context.read<AuthenticationService>().signIn(
+          email: _emailController.text.toString().trim(),
+          password: _passwordController.text.toString().trim(),
+        );
   }
 
   @override
@@ -153,50 +151,60 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
-          SizedBox(
-            height: 67,
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () =>
+                      context.read<AuthenticationService>().signInWithGoogle(),
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: ShapeDecoration(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(width: 1, color: Color(0xFFCDD1E0)),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    child: Image.asset(Assets.googlePng),
+                  ),
+                ),
+                SizedBox(
+                  width: 21,
+                ),
+                GestureDetector(
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: ShapeDecoration(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(width: 1, color: Color(0xFFCDD1E0)),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.facebook,
+                      color: Colors.blue,
+                      size: 25,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () =>
-                    context.read<AuthenticationService>().signInWithGoogle(),
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1, color: Color(0xFFCDD1E0)),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                  child: Image.asset(Assets.googlePng),
-                ),
-              ),
-              SizedBox(
-                width: 21,
-              ),
-              GestureDetector(
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1, color: Color(0xFFCDD1E0)),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.facebook,
-                    color: Colors.blue,
-                    size: 25,
-                  ),
-                ),
-              ),
-            ],
+          GestureDetector(
+            onTap: () {
+              Navkey.navkey.currentState?.pushNamed(RouterPath.register);
+            },
+            child: const CustomText(
+              AppText.create,
+              color: ConstantColors.grey,
+              alignment: Alignment.bottomCenter,
+            ),
           ),
           _isLoading ? CircularProgressIndicator() : Container(),
         ],

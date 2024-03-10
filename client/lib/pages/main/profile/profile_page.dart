@@ -3,6 +3,8 @@ import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/text.dart';
 import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -13,6 +15,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final user = FirebaseAuth.instance.currentUser!;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
@@ -58,8 +67,8 @@ class _ProfilePageState extends State<ProfilePage> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              const CustomText(
-                'UserName',
+              CustomText(
+                '${user.email}',
                 color: Colors.white,
               ),
               const SizedBox(
