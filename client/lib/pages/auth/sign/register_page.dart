@@ -1,14 +1,18 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:client/api/firebase_auth.dart';
+import 'package:client/bloc/userBloc.dart';
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/custum_text_input.dart';
 import 'package:client/component/text.dart';
 import 'package:client/helpers/utils.dart';
+import 'package:client/model/user_model.dart';
+import 'package:client/router/router_path.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
+import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -65,14 +69,36 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _pickImageFromCamera() async {
-    final result = await context.read<AuthenticationService>().signUp(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim(),
-          rePassword: _repasswordController.text.trim(),
-          username: _nameController.text.trim(),
-          initialImage: pickedFile,
-        );
-    if (result == 'Sign up') await _pickImages(ImageSource.gallery);
+    // final result = await context.read<AuthenticationService>().signUp(
+    //       email: _emailController.text.trim(),
+    //       password: _passwordController.text.trim(),
+    //       rePassword: _repasswordController.text.trim(),
+    //       username: _nameController.text.trim(),
+    //       initialImage: pickedFile,
+    //     );
+    // if (result == 'Sign up') {
+    //   await _pickImages(ImageSource.gallery);
+    // String base64Image = base64Encode(pickedFile!.readAsBytesSync());
+    //   UserInfoModel user = UserInfoModel(
+    //     name: _nameController.text.trim(),
+    //     email: _emailController.text.trim(),
+    //     password: _passwordController.text.trim(),
+    //     profileImage: base64Image,
+    //   );
+    //   await FirebaseFirestore.instance.collection('users').add(user.toJson());
+    // }
+    // await _pickImages(ImageSource.gallery);
+
+    // if (pickedFile != null) {
+    // String base64Image = base64Encode(pickedFile!.readAsBytesSync());
+    SignInRequest request = SignInRequest()
+      ..email = _emailController.text
+      ..name = _nameController.text
+      ..password = _passwordController.text
+      ..repassword = _repasswordController.text;
+    // ..imageUrl = base64Image;
+    context.read<AuthBloc>().add(RegisterEvent(request: request));
+    // }
   }
 
   void _onButtonPressed() {
@@ -83,78 +109,104 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  Future<void> _blocListener(BuildContext context, AuthState state) async {
+    if (state is SignUpSuccess) {
+      await Utils().showToastAlert(AppText.success, isAlert: false);
+      Navkey.navkey.currentState?.pushNamed(RouterPath.home);
+    } else if (state is SignUpFailed) {
+      await Utils().showToastAlert(state.message);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CustomScaffold(
-      padding: EdgeInsets.symmetric(horizontal: 33),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            alignment: Alignment.topCenter,
-            child: SvgPicture.asset(Assets.logo),
-          ),
-          const SizedBox(
-            height: 27,
-          ),
-          const CustomText(
-            'Нэр',
-            color: ConstantColors.grey,
-          ),
-          CustomTextInput(
-            controller: _nameController,
-            hintText: AppText.emailHint,
-            color: ConstantColors.white,
-          ),
-          const SizedBox(
-            height: 27,
-          ),
-          const CustomText(
-            'email',
-            color: ConstantColors.grey,
-          ),
-          CustomTextInput(
-            controller: _emailController,
-            hintText: AppText.emailHint,
-            color: ConstantColors.white,
-          ),
-          const SizedBox(
-            height: 17,
-          ),
-          const CustomText(
-            'password',
-            color: ConstantColors.grey,
-          ),
-          CustomTextInput(
-            controller: _passwordController,
-            hintText: 'password',
-            color: ConstantColors.white,
-          ),
-          const SizedBox(
-            height: 17,
-          ),
-          const CustomText(
-            'repassword',
-            color: ConstantColors.grey,
-          ),
-          CustomTextInput(
-            controller: _repasswordController,
-            hintText: AppText.emailHint,
-            color: ConstantColors.white,
-          ),
-        ],
-      ),
-      floatingActionButton: _isLoading
-          ? CircularProgressIndicator()
-          : Container(
-              margin: const EdgeInsets.all(20),
-              child: Button(
-                onPressed: _onButtonPressed,
-                text: AppText.create,
-              ),
+    return BlocConsumer<AuthBloc, AuthState>(
+        listener: _blocListener,
+        builder: (context, state) {
+          return CustomScaffold(
+            padding: EdgeInsets.symmetric(horizontal: 33),
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.topCenter,
+                  child: SvgPicture.asset(Assets.logo),
+                ),
+                const SizedBox(
+                  height: 27,
+                ),
+                const CustomText(
+                  'Нэр',
+                  color: ConstantColors.grey,
+                ),
+                CustomTextInput(
+                  controller: _nameController,
+                  hintText: AppText.emailHint,
+                  color: ConstantColors.white,
+                ),
+                const SizedBox(
+                  height: 27,
+                ),
+                const CustomText(
+                  'email',
+                  color: ConstantColors.grey,
+                ),
+                CustomTextInput(
+                  controller: _emailController,
+                  hintText: AppText.emailHint,
+                  color: ConstantColors.white,
+                ),
+                const SizedBox(
+                  height: 17,
+                ),
+                const CustomText(
+                  'password',
+                  color: ConstantColors.grey,
+                ),
+                CustomTextInput(
+                  controller: _passwordController,
+                  hintText: 'password',
+                  color: ConstantColors.white,
+                ),
+                const SizedBox(
+                  height: 17,
+                ),
+                const CustomText(
+                  'repassword',
+                  color: ConstantColors.grey,
+                ),
+                CustomTextInput(
+                  controller: _repasswordController,
+                  hintText: AppText.emailHint,
+                  color: ConstantColors.white,
+                ),
+              ],
             ),
-    );
+            floatingActionButton: _isLoading
+                ? CircularProgressIndicator()
+                : Container(
+                    margin: const EdgeInsets.all(20),
+                    child: Button(
+                      onPressed: () async {
+                        // String base64Image = base64Encode(pickedFile!.readAsBytesSync());
+
+                        // await _pickImages(ImageSource.gallery);
+
+                        // SignInRequest request = SignInRequest()
+                        //   ..email = _emailController.text
+                        //   ..name = _nameController.text
+                        //   ..password = _passwordController.text
+                        //   ..repassword = _repasswordController.text
+                        //   ..imageUrl = base64Image;
+                        // context.read<AuthBloc>().add(RegisterEvent(request: request));
+                        _pickImageFromCamera();
+                      },
+                      text: AppText.create,
+                    ),
+                  ),
+          );
+        });
   }
 
   @override
@@ -171,8 +223,7 @@ class _RegisterPageState extends State<RegisterPage> {
       return false;
     } else if (_emailController.text.isEmpty) {
       return false;
-    } else if (_passwordController.text.isEmpty &&
-        _repasswordController.text.isEmpty) {
+    } else if (_passwordController.text.isEmpty && _repasswordController.text.isEmpty) {
       return false;
     } else if (_passwordController.text != _repasswordController.text) {
       return false;
@@ -185,8 +236,7 @@ class _RegisterPageState extends State<RegisterPage> {
       Utils().showToastAlert('Нэрээ оруулна уу');
     } else if (_emailController.text.isEmpty) {
       Utils().showToastAlert('Мейл хаягаа оруулна уу');
-    } else if (_passwordController.text.isEmpty ||
-        _repasswordController.text.isEmpty) {
+    } else if (_passwordController.text.isEmpty || _repasswordController.text.isEmpty) {
       Utils().showToastAlert('Нууц үгээ оруулна уу');
     } else if (_passwordController.text != _repasswordController.text) {
       Utils().showToastAlert('Нууц үгээ шалгана уу');

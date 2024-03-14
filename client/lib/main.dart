@@ -1,5 +1,8 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:client/api/firebase_auth.dart';
+import 'package:client/bloc/bloc_manager.dart';
+import 'package:client/bloc/main_bloc.dart';
+import 'package:client/bloc/userBloc.dart';
 import 'package:client/component/text.dart';
 import 'package:client/firebase_options.dart';
 import 'package:client/pages/auth/login/login_page.dart';
@@ -13,6 +16,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -72,17 +76,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        Provider<AuthenticationService>(
-            create: (_) => AuthenticationService(
-                  FirebaseAuth.instance,
-                  _googleSignIn,
-                )),
-        StreamProvider(
-            create: (context) =>
-                context.read<AuthenticationService>().authStateChanges,
-            initialData: null)
+        // Provider<AuthenticationService>(
+        //     create: (_) => AuthenticationService(
+        //           FirebaseAuth.instance,
+        //           _googleSignIn,
+        //         )),
+        // StreamProvider(
+        //     create: (context) =>
+        //         context.read<AuthenticationService>().authStateChanges,
+        //     initialData: null)
+        BlocProvider<MainBloc>(create: (BuildContext context) => BlocManager.mainBloc),
+        BlocProvider<AuthBloc>(create: (BuildContext context) => BlocManager.authBloc),
       ],
       child: OverlaySupport(
         child: MaterialApp(
@@ -94,7 +100,27 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),
-            home: _handleAuth()),
+            home: AnimatedSplashScreen(
+              splash: Stack(alignment: Alignment.center, children: [
+                Container(
+                  alignment: Alignment.center,
+                  child: SvgPicture.asset(Assets.logo),
+                ),
+                const CustomText(
+                  AppText.faceSwappingSoftware,
+                  fontSize: 16,
+                  color: ConstantColors.grey,
+                  fontWeight: FontWeight.bold,
+                  alignment: Alignment(0, 0.75),
+                )
+              ]),
+              backgroundColor: ConstantColors.black,
+              nextScreen: LoginPage(),
+              pageTransitionType: PageTransitionType.fade,
+              splashTransition: SplashTransition.fadeTransition,
+              duration: 3000,
+              splashIconSize: double.infinity,
+            )),
       ),
     );
   }

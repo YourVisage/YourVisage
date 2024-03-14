@@ -1,7 +1,5 @@
 import 'package:client/helpers/func.dart';
 
-import '../helpers/shared_pref.dart';
-
 class ApiHelper {
   // static const String baseUrl = 'http://192.168.2.52:3333/'; // Test/
   static const String baseUrl = 'http://10.0.2.2:8000/'; // Production/
@@ -9,11 +7,7 @@ class ApiHelper {
 
   static Map<String, String> getHttpHeaders() {
     var headers = <String, String>{};
-    headers.addAll({
-      'Connection': 'Close',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    });
+    headers.addAll({'Connection': 'Close', 'Accept': 'application/json', 'Content-Type': 'application/json'});
 
     return headers;
   }
@@ -69,17 +63,14 @@ class ResponseCode {
   static const NoData = 40;
   static const BadRequest = 400; // No internet
   static const Unauthorized = 401; // We could not recognize you.
-  static const Forbidden =
-      403; // Access to the requested resource or action is forbidden.
+  static const Forbidden = 403; // Access to the requested resource or action is forbidden.
   static const NotFound = 404; // The requested resource could not be found.
   static const RequestTimeout = 408;
   static const Error = 422;
 
   // 5xx Server error
-  static const InternalServerError =
-      500; // We had a problem with our server. Try again later.
-  static const ServiceUnavailable =
-      503; // We're temporarily offline for maintenance. Please try again later.
+  static const InternalServerError = 500; // We had a problem with our server. Try again later.
+  static const ServiceUnavailable = 503; // We're temporarily offline for maintenance. Please try again later.
 
   /// Business response codes
   static const Success = 200;

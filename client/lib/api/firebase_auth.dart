@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:client/router/router_path.dart';
 import 'package:client/static/constant.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -20,8 +19,7 @@ class AuthenticationService {
     required String password,
   }) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
       Navkey.navkey.currentState?.pushNamed(RouterPath.home, arguments: {});
       return 'Sign in';
     } on FirebaseAuthException catch (e) {
@@ -29,17 +27,9 @@ class AuthenticationService {
     }
   }
 
-  Future<String> signUp(
-      {required String email,
-      required String password,
-      required String username,
-      required String rePassword,
-      File? initialImage}) async {
+  Future<String> signUp({required String email, required String password, required String username, required String rePassword, File? initialImage}) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      addUserDetail(email, password, username, rePassword);
-
+      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
       Navkey.navkey.currentState?.pushNamed(RouterPath.home, arguments: {
         'initialImage': initialImage,
       });
@@ -49,30 +39,14 @@ class AuthenticationService {
     }
   }
 
-  Future addUserDetail(
-    String email,
-    String password,
-    String username,
-    String rePassword,
-  ) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'username': username,
-      'email': email,
-      'password': password,
-      'repassword': rePassword,
-    });
-  }
-
   Future<String> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleSignInAccount =
-          await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
       print(googleSignInAccount);
       if (googleSignInAccount != null) {
         // print('object');
 
-        final GoogleSignInAuthentication googleSignInAuthentication =
-            await googleSignInAccount.authentication;
+        final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
         final AuthCredential credential = GoogleAuthProvider.credential(
           accessToken: googleSignInAuthentication.accessToken,
           idToken: googleSignInAuthentication.idToken,
@@ -91,7 +65,6 @@ class AuthenticationService {
 
   Future<void> signout() async {
     await _firebaseAuth.signOut();
-    Navkey.navkey.currentState
-        ?.pushNamedAndRemoveUntil(RouterPath.onboardingPage, (route) => false);
+    Navkey.navkey.currentState?.pushNamedAndRemoveUntil(RouterPath.onboardingPage, (route) => false);
   }
 }

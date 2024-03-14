@@ -5,4 +5,5 @@ class AppText {
   static const String save = 'Хадгалах';
   static const String please_wait = 'Түр хүлээнэ үү \n уншиж байна';
   static const String create = 'бүртгүүлэх';
+  static const String success = 'Амжилттай';
 }
