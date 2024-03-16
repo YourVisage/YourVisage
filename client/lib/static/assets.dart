@@ -12,4 +12,5 @@ class Assets {
   static const String dashboard = 'assets/icons/dashboard.svg';
   static const String person = 'assets/icons/person.svg';
   static const String analyze = 'assets/icons/analyze.svg';
+  static const String close = 'assets/icons/close.svg';
 }

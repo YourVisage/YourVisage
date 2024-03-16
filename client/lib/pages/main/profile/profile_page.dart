@@ -1,13 +1,18 @@
 import 'package:client/api/fireStore_service.dart';
 import 'package:client/component/bottom_navigation.dart';
+import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/text.dart';
 import 'package:client/model/user_model.dart';
+import 'package:client/router/router_path.dart';
+import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
+import 'package:client/static/constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -17,23 +22,73 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late User _user;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   // late Stream<UserInfoModel?> _userInfoStream;
-  final FirestoreService _firestoreService = FirestoreService(FirebaseFirestore.instance);
 
   @override
   void initState() {
     super.initState();
-    _user = FirebaseAuth.instance.currentUser!;
-    // _userInfoStream = _firestoreService.getUserInfoStream(_user.uid);
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
+        scaffoldKey: _scaffoldKey,
         appBarColor: ConstantColors.primary,
         padding: EdgeInsets.zero,
         bottomNavigationBar: BottomNavigation(currentMenu: 3),
+        drawer: Drawer(
+            backgroundColor: ConstantColors.black,
+            child: ListView(
+              padding: const EdgeInsets.only(top: kToolbarHeight),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: SvgPicture.asset(
+                          Assets.close,
+                          width: 16,
+                          height: 16,
+                          alignment: Alignment.topLeft,
+                          color: ConstantColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navkey.navkey.currentState?.pushNamedAndRemoveUntil(RouterPath.login, (route) => false);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SvgPicture.asset(
+                          Assets.close,
+                          width: 16,
+                          height: 16,
+                          alignment: Alignment.topLeft,
+                          color: Colors.red,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        CustomText(
+                          AppText.leave,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            )),
         body: Column(children: [
           Stack(
             clipBehavior: Clip.none,
@@ -60,9 +115,14 @@ class _ProfilePageState extends State<ProfilePage> {
               Positioned(
                   bottom: 30,
                   right: 20,
-                  child: Icon(
-                    Icons.settings,
-                    color: Colors.white,
+                  child: GestureDetector(
+                    onTap: () {
+                      _scaffoldKey.currentState?.openEndDrawer();
+                    },
+                    child: Icon(
+                      Icons.settings,
+                      color: Colors.white,
+                    ),
                   )),
             ],
           ),

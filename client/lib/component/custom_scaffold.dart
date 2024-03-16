@@ -34,8 +34,7 @@ class CustomScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: floatingActionButton,
-      floatingActionButtonLocation: floatingActionButtonLocation ??
-          FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: floatingActionButtonLocation ?? FloatingActionButtonLocation.centerDocked,
       resizeToAvoidBottomInset: false,
       key: scaffoldKey,
       backgroundColor: backgroundColor ?? ConstantColors.black,
@@ -44,14 +43,13 @@ class CustomScaffold extends StatelessWidget {
             context: context,
             backgroundColor: appBarColor ?? ConstantColors.black,
           ),
-      drawer: drawer,
+      endDrawer: drawer,
       body: GestureDetector(
         onTap: () {
           Utils.hideKeyboard(context);
         },
         child: Container(
-          padding:
-              padding ?? const EdgeInsets.only(left: 16, right: 16, bottom: 30),
+          padding: padding ?? const EdgeInsets.only(left: 16, right: 16, bottom: 30),
           child: body,
         ),
       ),

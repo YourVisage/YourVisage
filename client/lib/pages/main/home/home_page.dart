@@ -66,9 +66,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navkey.navkey.currentState?.pushNamed(
-                            RouterPath.pickImage,
-                            arguments: {'initialImage': widget.initialImage});
+                        Navkey.navkey.currentState?.pushNamed(RouterPath.pickImage, arguments: {'initialImage': widget.initialImage});
                       },
                       child: Container(
                         padding: const EdgeInsets.all(2),
@@ -94,9 +92,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    Button(
-                        onPressed: () =>
-                            context.read<AuthenticationService>().signout())
                   ],
                 );
               } else {

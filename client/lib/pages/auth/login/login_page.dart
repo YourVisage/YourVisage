@@ -42,6 +42,26 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  Future<void> _pickImages(ImageSource source) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final XFile? returnImage = await ImagePicker().pickImage(source: source);
+
+    if (returnImage == null) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    setState(() {
+      pickedFile = File(returnImage.path);
+      _isLoading = false;
+    });
+  }
+
   Future<void> _pickImageFromCamera() async {
     await context.read<AuthenticationService>().signIn(
           email: _emailController.text.toString().trim(),
@@ -52,7 +72,13 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _blocListener(BuildContext context, AuthState state) async {
     if (state is LoginUserSuccess) {
       await Utils().showToastAlert(AppText.success, isAlert: false);
-      Navkey.navkey.currentState?.pushNamed(RouterPath.home);
+      await _pickImages(ImageSource.gallery);
+      Navkey.navkey.currentState?.pushNamed(
+        RouterPath.homeMain,
+        arguments: {
+          'initialImage': pickedFile,
+        },
+      );
     } else if (state is LoginUserFailed) {
       await Utils().showToastAlert(state.message);
     }

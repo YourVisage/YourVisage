@@ -23,9 +23,7 @@ class AppRouter {
     if (settings.arguments != null) args = settings.arguments;
     switch (settings.name) {
       case RouterPath.login:
-        return SwipeablePageRoute(
-          builder: (_) => const LoginPage(),
-        );
+        return PageTransition(child: const LoginPage(), type: PageTransitionType.fade, duration: const Duration(milliseconds: 300), reverseDuration: const Duration(milliseconds: 300));
       case RouterPath.home:
         return SwipeablePageRoute(
           builder: (_) => HomePage(),
@@ -35,11 +33,7 @@ class AppRouter {
           builder: (_) => const CameraPage(),
         );
       case RouterPath.profile:
-        return PageTransition(
-            child: const ProfilePage(),
-            type: PageTransitionType.fade,
-            duration: const Duration(milliseconds: 300),
-            reverseDuration: const Duration(milliseconds: 300));
+        return PageTransition(child: const ProfilePage(), type: PageTransitionType.fade, duration: const Duration(milliseconds: 300), reverseDuration: const Duration(milliseconds: 300));
       case RouterPath.homeMain:
         return PageTransition(
           child: HomePage(

@@ -7,4 +7,5 @@ class ConstantColors {
   static const white = Color(0xFFFFFFFF);
   static const error = Color(0xFFDB3030);
   static const lightBlue = Color(0xFF3F7F9B);
+  static const darkGreen = Color(0xFF003731);
 }
