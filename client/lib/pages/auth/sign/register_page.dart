@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:client/bloc/userBloc.dart';
+import 'package:client/bloc/authBloc.dart';
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/custum_text_input.dart';
@@ -69,28 +68,6 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _pickImageFromCamera() async {
-    // final result = await context.read<AuthenticationService>().signUp(
-    //       email: _emailController.text.trim(),
-    //       password: _passwordController.text.trim(),
-    //       rePassword: _repasswordController.text.trim(),
-    //       username: _nameController.text.trim(),
-    //       initialImage: pickedFile,
-    //     );
-    // if (result == 'Sign up') {
-    //   await _pickImages(ImageSource.gallery);
-    // String base64Image = base64Encode(pickedFile!.readAsBytesSync());
-    //   UserInfoModel user = UserInfoModel(
-    //     name: _nameController.text.trim(),
-    //     email: _emailController.text.trim(),
-    //     password: _passwordController.text.trim(),
-    //     profileImage: base64Image,
-    //   );
-    //   await FirebaseFirestore.instance.collection('users').add(user.toJson());
-    // }
-    // await _pickImages(ImageSource.gallery);
-
-    // if (pickedFile != null) {
-    // String base64Image = base64Encode(pickedFile!.readAsBytesSync());
     SignInRequest request = SignInRequest()
       ..email = _emailController.text
       ..name = _nameController.text
@@ -98,7 +75,6 @@ class _RegisterPageState extends State<RegisterPage> {
       ..repassword = _repasswordController.text;
     // ..imageUrl = base64Image;
     context.read<AuthBloc>().add(RegisterEvent(request: request));
-    // }
   }
 
   void _onButtonPressed() {

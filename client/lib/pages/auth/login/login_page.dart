@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:client/api/firebase_auth.dart';
-import 'package:client/bloc/userBloc.dart';
+import 'package:client/bloc/authBloc.dart';
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/custum_text_input.dart';
@@ -16,7 +16,6 @@ import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -42,42 +41,11 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Future<void> _pickImages(ImageSource source) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    final XFile? returnImage = await ImagePicker().pickImage(source: source);
-
-    if (returnImage == null) {
-      setState(() {
-        _isLoading = false;
-      });
-      return;
-    }
-
-    setState(() {
-      pickedFile = File(returnImage.path);
-      _isLoading = false;
-    });
-  }
-
-  Future<void> _pickImageFromCamera() async {
-    await context.read<AuthenticationService>().signIn(
-          email: _emailController.text.toString().trim(),
-          password: _passwordController.text.toString().trim(),
-        );
-  }
-
   Future<void> _blocListener(BuildContext context, AuthState state) async {
     if (state is LoginUserSuccess) {
       await Utils().showToastAlert(AppText.success, isAlert: false);
-      await _pickImages(ImageSource.gallery);
       Navkey.navkey.currentState?.pushNamed(
         RouterPath.homeMain,
-        arguments: {
-          'initialImage': pickedFile,
-        },
       );
     } else if (state is LoginUserFailed) {
       await Utils().showToastAlert(state.message);
@@ -111,18 +79,6 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: AppText.emailHint,
                   color: ConstantColors.white,
                 ),
-                // const SizedBox(
-                //   height: 17,
-                // ),
-                // const CustomText(
-                //   'password',
-                //   color: ConstantColors.grey,
-                // ),
-                // CustomTextInput(
-                //   controller: _passwordController,
-                //   hintText: 'password',
-                //   color: ConstantColors.white,
-                // ),
                 const SizedBox(height: 26),
                 Button(
                   onPressed: () {

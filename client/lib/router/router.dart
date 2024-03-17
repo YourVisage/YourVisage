@@ -1,7 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:client/component/text.dart';
 import 'package:client/pages/auth/login/login_page.dart';
-import 'package:client/pages/auth/selfie/camera_page.dart';
+import 'package:client/pages/auth/sign/camera_page.dart';
 import 'package:client/pages/auth/sign/register_page.dart';
 import 'package:client/pages/main/analyze/analazy.page.dart';
 import 'package:client/pages/main/home/home_page.dart';

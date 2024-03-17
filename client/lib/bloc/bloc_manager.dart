@@ -1,5 +1,6 @@
 import 'package:client/bloc/deepFakeImage/fake_bloc.dart';
 import 'package:client/bloc/main_bloc.dart';
+import 'package:client/bloc/authBloc.dart';
 import 'package:client/bloc/userBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,11 +9,13 @@ class BlocManager {
   static final mainBloc = MainBloc();
   static final fakeBloc = FakeBloc();
   static final authBloc = AuthBloc();
+  static final userBloc = UserBloc();
 
   static void dispose() {
     mainBloc.close();
     fakeBloc.close();
     authBloc.close();
+    userBloc.close();
   }
 }
 
