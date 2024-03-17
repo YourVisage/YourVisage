@@ -55,6 +55,8 @@ dependencies:
   provider: ^6.1.2
   google_sign_in: ^6.2.1
   flutter_firebase_recaptcha: ^1.0.2
+  firebase_storage: ^11.6.9
+  path: ^1.8.3
 
 
 dev_dependencies:

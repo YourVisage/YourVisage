@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   String? email;
   String? password = '';
-
+  LoginUserResponse? loginjwt;
   @override
   void initState() {
     super.initState();
@@ -44,8 +44,9 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _blocListener(BuildContext context, AuthState state) async {
     if (state is LoginUserSuccess) {
       await Utils().showToastAlert(AppText.success, isAlert: false);
+
       Navkey.navkey.currentState?.pushNamed(
-        RouterPath.homeMain,
+        RouterPath.camera,
       );
     } else if (state is LoginUserFailed) {
       await Utils().showToastAlert(state.message);

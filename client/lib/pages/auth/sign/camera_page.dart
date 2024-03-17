@@ -1,8 +1,18 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
+import 'package:client/bloc/userBloc.dart';
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
+import 'package:client/helpers/application.dart';
+import 'package:client/model/login_model.dart';
+import 'package:client/provider/globals.dart';
+import 'package:client/router/router_path.dart';
 import 'package:client/static/app_text.dart';
+import 'package:client/static/constant.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({Key? key}) : super(key: key);
@@ -17,10 +27,14 @@ class _CameraPageState extends State<CameraPage> {
   bool _isFrontCamera = false;
   late XFile? _pickedFile;
   late List<CameraDescription> _cameras;
+  LoginUserResponse? login;
+
   @override
   void initState() {
-    super.initState();
+    login = globals.login;
     _initializeCamera();
+    super.initState();
+    print('jwt token shvv $login');
   }
 
   Future<void> _initializeCamera() async {
@@ -60,6 +74,15 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
+  // Future<String> uploadImageToFirebase(File imageFile) async {
+  //   String fileName = basename(imageFile.path);
+  //   Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('${login?.accessToken}/$fileName');
+  //   UploadTask uploadTask = firebaseStorageRef.putFile(imageFile);
+  //   TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
+  //   String downloadURL = await taskSnapshot.ref.getDownloadURL();
+  //   return downloadURL;
+  // }
+
   void _takePicture() async {
     try {
       final XFile file = await _controller.takePicture();
@@ -67,15 +90,18 @@ class _CameraPageState extends State<CameraPage> {
         _pickedFile = file;
       });
       print('filuud: ${_pickedFile?.path}');
+      if (_pickedFile != null) {
+        File imageFile = File(_pickedFile!.path);
+        // String downloadURL = await uploadImageToFirebase(imageFile);
+        // print('Image uploaded to Firebase Storage: $downloadURL');
+        // await application.setProfileImage(imageFile.toString());
+        Navkey.navkey.currentState?.pushNamed(RouterPath.homeMain, arguments: {
+          'initialImage': imageFile,
+        });
+      }
     } catch (e) {
       print(e);
     }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -110,5 +136,11 @@ class _CameraPageState extends State<CameraPage> {
                       ),
                     )),
               ));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

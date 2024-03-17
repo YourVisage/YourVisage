@@ -2,6 +2,7 @@ import 'package:client/bloc/userBloc.dart';
 import 'package:client/component/bottom_navigation.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/text.dart';
+import 'package:client/helpers/application.dart';
 import 'package:client/model/login_model.dart';
 import 'package:client/model/userinfo_model.dart';
 import 'package:client/provider/globals.dart';

@@ -25,6 +25,7 @@ class Constants {
   static const txnCode = 'txn_code';
   static const biometric = 'biometric';
   static const isSawOnboarding = 'isSawOnboarding';
+  static const prifileImage = 'prifileImage';
 }
 
 class Navkey {
