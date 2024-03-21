@@ -1,4 +1,5 @@
 import 'package:client/api/api_helper.dart';
+import 'package:client/api/base_response.dart';
 import 'package:client/api/htpp_path.dart';
 import 'package:client/api/http_utils.dart';
 import 'package:client/model/fake_detect_model.dart';
@@ -6,6 +7,7 @@ import 'package:client/model/image_picker_modal.dart';
 import 'package:client/model/login_model.dart';
 import 'package:client/model/user_model.dart';
 import 'package:client/model/userinfo_model.dart';
+import 'package:dio/dio.dart';
 
 class ApiManager {
   static Future<SwapImageResponse> swappingImage(SwapImageRequest request) async {

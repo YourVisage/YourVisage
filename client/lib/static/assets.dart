@@ -8,6 +8,7 @@ class Assets {
   static const String pickImagePic = 'assets/images/pickImagePic.jpeg';
   static const String google = 'assets/images/google.svg';
   static const String googlePng = 'assets/images/Google.png';
+  static const String me = 'assets/images/me.jpg';
   //Icons
   static const String dashboard = 'assets/icons/dashboard.svg';
   static const String person = 'assets/icons/person.svg';

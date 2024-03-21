@@ -47,6 +47,11 @@ class HttpUtils {
 
       /// Url
       _client.options.baseUrl = url;
+      // _client.options.receiveTimeout = Duration(milliseconds: 0000);
+      // _client.options.connectTimeout = Duration(milliseconds: 30000);
+      _client.options.followRedirects = false;
+
+      print("options:${_client.options.connectTimeout}");
 
       /// Request data
       dynamic requestBody;
@@ -67,9 +72,7 @@ class HttpUtils {
           break;
 
         case DataType.List:
-          var dataList = (dynamicData != null)
-              ? dynamicData
-              : []; // Dynamic list. Example: [11, "12"]
+          var dataList = (dynamicData != null) ? dynamicData : []; // Dynamic list. Example: [11, "12"]
           requestBody = dataList;
           break;
         case DataType.FormData:
@@ -77,9 +80,7 @@ class HttpUtils {
           break;
 
         default:
-          requestBody = (objectData != null)
-              ? objectData.toJson()
-              : <Map<String, dynamic>>[];
+          requestBody = (objectData != null) ? objectData.toJson() : <Map<String, dynamic>>[];
       }
 
       /// Send request
@@ -114,8 +115,7 @@ class HttpUtils {
         } else if (response.data is Map<String, dynamic>) {
           responseData.addAll(response.data); // JSON object
         } else {
-          responseData[ResponseParam.data] =
-              response.data; // Other response, JSON array etc
+          responseData[ResponseParam.data] = response.data; // Other response, JSON array etc
         }
       } else {
         /// FAILED
@@ -130,14 +130,12 @@ class HttpUtils {
 
       logger.log(s: 10, m: 'DioError Exception: $error');
       responseData[ResponseParam.code] = error.response?.statusCode;
-      responseData[ResponseParam.message] =
-          ApiHelper.getErrorMessage(ResponseCode.Failed, error.message);
+      responseData[ResponseParam.message] = ApiHelper.getErrorMessage(ResponseCode.Failed, error.message);
 
       if (error.type == DioErrorType.connectionTimeout) {
         // Request timeout
         responseData[ResponseParam.code] = ResponseCode.RequestTimeout;
-        responseData[ResponseParam.message] = ApiHelper.getErrorMessage(
-            ResponseCode.RequestTimeout, error.message);
+        responseData[ResponseParam.message] = ApiHelper.getErrorMessage(ResponseCode.RequestTimeout, error.message);
       } else if (error.response?.statusCode == ResponseCode.Error) {
         // 422 Error
         responseData[ResponseParam.code] = error.response?.statusCode;
@@ -155,10 +153,8 @@ class HttpUtils {
         response = error.response!;
         if (response.data != null && response.data is Map<String, dynamic>) {
           try {
-            responseData[ResponseParam.code] =
-                error.response?.data['StatusCode'];
-            responseData[ResponseParam.message] =
-                error.response?.data['Message'];
+            responseData[ResponseParam.code] = error.response?.data['StatusCode'];
+            responseData[ResponseParam.message] = error.response?.data['Message'];
           } catch (e) {
             print(e);
           }
@@ -175,8 +171,7 @@ class HttpUtils {
       print(error);
       logger.log(s: 11, m: 'Exception occured: $error stackTrace: $stacktrace');
       responseData[ResponseParam.code] = ResponseCode.Failed;
-      responseData[ResponseParam.message] =
-          ApiHelper.getErrorMessage(ResponseCode.Failed, error);
+      responseData[ResponseParam.message] = ApiHelper.getErrorMessage(ResponseCode.Failed, error);
     } finally {
       response.data = responseData;
     }
@@ -192,10 +187,16 @@ class HttpUtils {
     logger.func = '_internal';
     logger.log(s: 1);
 
-    BaseOptions options = BaseOptions();
+    BaseOptions options = BaseOptions(
+      responseType: ResponseType.json,
+      receiveTimeout: Duration(milliseconds: 30000),
+      connectTimeout: Duration(milliseconds: 30000),
+      followRedirects: false,
+      receiveDataWhenStatusError: true,
+    );
     options.baseUrl = ApiHelper.baseUrl; // + ApiHelper.basePath;
-    options.contentType =
-        Headers.jsonContentType; //ContentType.parse("application/json");
+    // options.contentType =
+    //     Headers.jsonContentType; //ContentType.parse("application/json");
     //options.contentType= ContentType.parse("application/x-www-form-urlencoded");
     options.headers = ApiHelper.getHttpHeaders();
 //      _client.httpClientAdapter
@@ -205,10 +206,8 @@ class HttpUtils {
         // ..add(CookieManager(CookieJar()))
         .add(LogInterceptor(requestBody: true, responseBody: true));
 
-    (_client.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (HttpClient client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+    (_client.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
+      client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
       return client;
     };
   }

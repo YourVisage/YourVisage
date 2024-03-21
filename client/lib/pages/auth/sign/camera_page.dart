@@ -74,15 +74,6 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
-  // Future<String> uploadImageToFirebase(File imageFile) async {
-  //   String fileName = basename(imageFile.path);
-  //   Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('${login?.accessToken}/$fileName');
-  //   UploadTask uploadTask = firebaseStorageRef.putFile(imageFile);
-  //   TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-  //   String downloadURL = await taskSnapshot.ref.getDownloadURL();
-  //   return downloadURL;
-  // }
-
   void _takePicture() async {
     try {
       final XFile file = await _controller.takePicture();

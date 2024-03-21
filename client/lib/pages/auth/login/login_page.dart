@@ -13,9 +13,11 @@ import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
 import 'package:client/static/constant.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -41,13 +43,33 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  Future<void> _pickImages(ImageSource source) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final XFile? returnImage = await ImagePicker().pickImage(source: source);
+
+    if (returnImage == null) {
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
+    setState(() {
+      pickedFile = File(returnImage.path);
+      _isLoading = false;
+    });
+  }
+
   Future<void> _blocListener(BuildContext context, AuthState state) async {
     if (state is LoginUserSuccess) {
       await Utils().showToastAlert(AppText.success, isAlert: false);
-
-      Navkey.navkey.currentState?.pushNamed(
-        RouterPath.camera,
-      );
+      await _pickImages(ImageSource.gallery);
+      Navkey.navkey.currentState?.pushNamed(RouterPath.homeMain, arguments: {
+        'initialImage': pickedFile,
+      });
     } else if (state is LoginUserFailed) {
       await Utils().showToastAlert(state.message);
     }
@@ -82,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 26),
                 Button(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_emailController.text.isNotEmpty) {
                       LoginUserRequest request = LoginUserRequest()..email = _emailController.text;
                       // ..password = _passwordController.text;
