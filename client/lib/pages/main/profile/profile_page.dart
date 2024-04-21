@@ -28,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   LoginUserResponse? login;
   UserinfoResponse? userInfo;
-  String? generatedImage;
+  String? profile;
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _getSavedImageData() async {
-    generatedImage = await application.getProfileImage();
+    profile = await application.getProfileImage();
     setState(() {}); // Update state to trigger a rebuild
   }
 
@@ -125,14 +125,29 @@ class _ProfilePageState extends State<ProfilePage> {
                         color: ConstantColors.primary,
                       ),
                     ),
-                    Positioned(
-                      top: 20,
-                      left: 0,
-                      child: Image.asset(
-                        Assets.profile1,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    profile != null
+                        ? Positioned(
+                            top: 20,
+                            left: 20,
+                            child: ClipOval(
+                              child: Container(
+                                child: Image.memory(
+                                  base64Decode(profile!),
+                                  cacheHeight: 60,
+                                  cacheWidth: 60,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Positioned(
+                            top: 20,
+                            left: 0,
+                            child: Image.asset(
+                              Assets.profile1,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                     Positioned(
                         bottom: 30,
                         right: 20,
@@ -180,13 +195,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       Row(
                         children: [
-                          generatedImage != null
+                          profile != null
                               ? Container(
                                   width: 150,
                                   height: 200,
                                   decoration: BoxDecoration(color: ConstantColors.white),
                                   child: Image.memory(
-                                    base64Decode(generatedImage!),
+                                    base64Decode(profile!),
                                     fit: BoxFit.cover,
                                   ),
                                 )

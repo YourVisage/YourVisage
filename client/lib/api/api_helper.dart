@@ -4,7 +4,8 @@ class ApiHelper {
   // static const String baseUrl = 'http://127.0.0.1:8000/'; // ios/ local
   // static const String baseUrl = 'http://10.0.2.2:8000/'; // android/ local
 
-  static const String baseUrl = 'http://172.20.10.4:8000/';
+  // static const String baseUrl = 'http://172.20.10.4:8000/';
+  static const String baseUrl = 'http://192.168.1.141:8000/';
 
   static Map<String, String> getHttpHeaders() {
     var headers = <String, String>{};

@@ -88,7 +88,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> _blocListener(BuildContext context, AuthState state) async {
     if (state is SignUpSuccess) {
       await Utils().showToastAlert(AppText.success, isAlert: false);
-      Navkey.navkey.currentState?.pushNamed(RouterPath.home);
+      Navkey.navkey.currentState?.pushNamed(RouterPath.login);
     } else if (state is SignUpFailed) {
       await Utils().showToastAlert(state.message);
     }
