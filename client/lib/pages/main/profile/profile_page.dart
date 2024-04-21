@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:client/bloc/userBloc.dart';
 import 'package:client/component/bottom_navigation.dart';
 import 'package:client/component/custom_scaffold.dart';
@@ -26,12 +28,19 @@ class _ProfilePageState extends State<ProfilePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   LoginUserResponse? login;
   UserinfoResponse? userInfo;
+  String? generatedImage;
 
   @override
   void initState() {
     login = globals.login;
     context.read<UserBloc>().add(GetUserInfoEvent(login?.accessToken ?? ''));
+    _getSavedImageData();
     super.initState();
+  }
+
+  Future<void> _getSavedImageData() async {
+    generatedImage = await application.getProfileImage();
+    setState(() {}); // Update state to trigger a rebuild
   }
 
   Future<void> _blocListener(BuildContext context, UserState state) async {
@@ -171,19 +180,21 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       Row(
                         children: [
-                          Container(
-                            width: 150,
-                            height: 200,
-                            decoration: BoxDecoration(color: ConstantColors.white),
-                          ),
-                          SizedBox(
-                            width: 50,
-                          ),
-                          Container(
-                            width: 150,
-                            height: 200,
-                            decoration: BoxDecoration(color: ConstantColors.white),
-                          )
+                          generatedImage != null
+                              ? Container(
+                                  width: 150,
+                                  height: 200,
+                                  decoration: BoxDecoration(color: ConstantColors.white),
+                                  child: Image.memory(
+                                    base64Decode(generatedImage!),
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Container(
+                                  width: 150,
+                                  height: 200,
+                                  decoration: BoxDecoration(color: ConstantColors.white),
+                                )
                         ],
                       ),
                     ],

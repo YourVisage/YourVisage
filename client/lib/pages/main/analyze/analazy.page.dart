@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:client/component/bottom_navigation.dart';
@@ -9,7 +8,6 @@ import 'package:client/static/colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 
 class AnalazyPage extends StatefulWidget {
   const AnalazyPage({Key? key}) : super(key: key);
@@ -20,34 +18,27 @@ class AnalazyPage extends StatefulWidget {
 
 class _AnalazyPageState extends State<AnalazyPage> {
   File? pickedFile;
-  double? aiGenerated; // Declare aiGenerated variable here
-  void initState() {
-    setState(() {
-      aiGenerated;
-    });
-    super.initState();
-  }
+  ValueNotifier<String> aiGenerated = ValueNotifier<String>('');
+  ValueNotifier<double> confidenceScore = ValueNotifier<double>(0.0);
+  ValueNotifier<bool> loading = ValueNotifier<bool>(false);
 
   Future<void> _pickImageFromGallery() async {
-    final XFile? returnImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
+    print('--------------------------------');
+    loading.value = true;
+    final XFile? returnImage = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (returnImage == null) {
       return;
     }
-
     setState(() {
       pickedFile = File(returnImage.path);
     });
-
     try {
       final formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(pickedFile!.path,
-            filename: 'image.jpg'),
+        'image': await MultipartFile.fromFile(pickedFile!.path, filename: 'image.jpg'),
       });
-
       final response = await Dio().post(
-        'http://10.0.2.2:8000/api/detect',
+        // 'http://10.0.2.2:8000/detect',
+        'http://172.20.10.4:8000/detect',
         data: formData,
         options: Options(
           headers: {
@@ -57,17 +48,31 @@ class _AnalazyPageState extends State<AnalazyPage> {
       );
 
       if (response.statusCode == 200) {
+        loading.value = false;
         final responseData = response.data;
         print('Response data: $responseData');
         setState(() {
-          aiGenerated = responseData['type']['ai_generated'];
+          aiGenerated.value = responseData['class'];
+          confidenceScore.value = responseData['confidence_score'];
         });
+        print('ai ? ${aiGenerated.value}');
+        print('confidenceScore ${confidenceScore.value}');
       } else {
         print('Error: ${response.statusCode}');
       }
     } catch (e) {
       print('Error occurred: $e');
+      loading.value = false;
     }
+  }
+
+  String translatePrediction(String prediction) {
+    if (prediction == 'Real') {
+      return 'Энгийн зураг'; // Replace with your translated text for 'Real'
+    } else if (prediction == 'Fake') {
+      return 'Хиймэл оюун ухаан'; // Replace with your translated text for 'Fake'
+    }
+    return prediction; // Return the original value if not 'Real' or 'Fake'
   }
 
   @override
@@ -80,17 +85,13 @@ class _AnalazyPageState extends State<AnalazyPage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             CustomText(
-              aiGenerated != null ? 'AI Generated: $aiGenerated' : '',
+              translatePrediction(aiGenerated.value),
               color: Colors.white,
               textAlign: TextAlign.center,
               alignment: Alignment.center,
             ),
             CustomText(
-              aiGenerated != null
-                  ? aiGenerated! < 0.5
-                      ? 'Энгийн зураг байна'
-                      : 'Хиймэл оюун ухааны зураг'
-                  : '',
+              confidenceScore.value.toString(),
               color: Colors.white,
               textAlign: TextAlign.center,
               alignment: Alignment.center,
@@ -107,6 +108,7 @@ class _AnalazyPageState extends State<AnalazyPage> {
               height: 50,
             ),
             Button(
+              loading: loading.value,
               onPressed: _pickImageFromGallery,
               text: 'Gallery',
               color: ConstantColors.primary.withOpacity(0.8),

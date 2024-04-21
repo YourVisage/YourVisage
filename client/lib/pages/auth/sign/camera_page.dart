@@ -1,7 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:client/bloc/userBloc.dart';
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/helpers/application.dart';
@@ -10,9 +10,7 @@ import 'package:client/provider/globals.dart';
 import 'package:client/router/router_path.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/constant.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({Key? key}) : super(key: key);
@@ -83,12 +81,11 @@ class _CameraPageState extends State<CameraPage> {
       print('filuud: ${_pickedFile?.path}');
       if (_pickedFile != null) {
         File imageFile = File(_pickedFile!.path);
-        // String downloadURL = await uploadImageToFirebase(imageFile);
-        // print('Image uploaded to Firebase Storage: $downloadURL');
-        // await application.setProfileImage(imageFile.toString());
         Navkey.navkey.currentState?.pushNamed(RouterPath.homeMain, arguments: {
           'initialImage': imageFile,
         });
+        final bytes = await _pickedFile!.readAsBytes();
+        await application.setProfileImage(base64Encode(bytes));
       }
     } catch (e) {
       print(e);

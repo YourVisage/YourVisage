@@ -11,6 +11,7 @@ class LoginUserRequest extends BaseRequest {
   LoginUserRequest.toJson(Map<String, dynamic> json) {
     email = json['email'];
   }
+  @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['email'] = this.email;

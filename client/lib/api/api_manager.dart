@@ -20,8 +20,8 @@ class ApiManager {
     return res;
   }
 
-  static Future<DetectModal> detectImage(DetectModelRequest request) async {
-    var res = DetectModal.fromJson(await httpUtils.sendRequest(
+  static Future<DetectionModalResponse> detectImage(DetectionModalRequest request) async {
+    var res = DetectionModalResponse.fromJson(await httpUtils.sendRequest(
       path: HttpPath.detectAi,
       objectData: request,
       httpMethod: HttpMethod.post,

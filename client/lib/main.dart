@@ -1,5 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:client/bloc/bloc_manager.dart';
+import 'package:client/bloc/deepFakeImage/fake_bloc.dart';
 import 'package:client/bloc/main_bloc.dart';
 import 'package:client/bloc/authBloc.dart';
 import 'package:client/bloc/userBloc.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<MainBloc>(create: (BuildContext context) => BlocManager.mainBloc),
         BlocProvider<AuthBloc>(create: (BuildContext context) => BlocManager.authBloc),
         BlocProvider<UserBloc>(create: (BuildContext context) => BlocManager.userBloc),
+        BlocProvider<FakeBloc>(create: (BuildContext context) => BlocManager.fakeBloc),
       ],
       child: OverlaySupport(
           child: MaterialApp(

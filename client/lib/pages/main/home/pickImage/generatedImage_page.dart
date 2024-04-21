@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
+import 'package:client/helpers/application.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/colors.dart';
 import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GeneratedImagePage extends StatefulWidget {
   final String? initialImage;
@@ -20,6 +21,11 @@ class GeneratedImagePage extends StatefulWidget {
 }
 
 class _GeneratedImagePageState extends State<GeneratedImagePage> {
+  Future<void> saveImageData(String base64Image) async {
+    final prefs = await application.getSharedPrefs();
+    await prefs.setString('generated_image', base64Image);
+  }
+
   @override
   Widget build(BuildContext context) {
     final imageData = base64Decode(widget.initialImage!.split(',').last);
@@ -37,28 +43,26 @@ class _GeneratedImagePageState extends State<GeneratedImagePage> {
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Column(children: [
-              if (widget.initialImage!.isNotEmpty)
-                Image.memory(
-                  imageData,
-                  fit: BoxFit.cover,
-                  width: 200,
-                ),
-            ]),
-            Spacer(),
-            Container(
-              padding: const EdgeInsets.all(10),
-              alignment: Alignment.bottomCenter,
-              child: Button(
-                onPressed: () {},
-                text: AppText.save,
-              ),
-            ),
-          ],
-        ),
+        child: Container(
+            alignment: Alignment.center,
+            child: widget.initialImage!.isNotEmpty
+                ? Expanded(
+                    flex: 1,
+                    child: Image.memory(
+                      imageData,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : Container()),
       ),
+      floatingActionButton: Button(
+        onPressed: () async {
+          String base64image = base64Encode(imageData);
+          await application.setGeneratedImage(base64image);
+        },
+        text: AppText.save,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

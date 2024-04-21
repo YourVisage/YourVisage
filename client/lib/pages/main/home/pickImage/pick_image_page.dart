@@ -53,11 +53,16 @@ class _PickImagePageState extends State<PickImagePage> {
         'real_image': await MultipartFile.fromFile(pickedFile!.path),
       });
       final response = await dio.post(
-        'http://10.0.2.2:8000/api/swap-image',
+        // 'http://10.0.2.2:8000/api/swap-image',
+        'http://172.20.10.4:8000/api/swap-image',
         data: formData,
       );
 
+      print('response: ${response}');
+
       if (response.statusCode == 200) {
+        print('--------------------------------');
+
         final responseData = response.data;
 
         _returnImage = 'data:image/png;base64,' + responseData['result_image'];

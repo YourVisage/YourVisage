@@ -18,6 +18,7 @@ class Button extends StatelessWidget {
   final double? fontSize;
   final Color? backgroundColor;
   final Color? disabledColor;
+  final bool? loading;
 
   const Button({
     Key? key,
@@ -34,6 +35,7 @@ class Button extends StatelessWidget {
     this.fontSize,
     this.backgroundColor,
     this.disabledColor,
+    this.loading,
   }) : super(key: key);
 
   @override
@@ -43,29 +45,31 @@ class Button extends StatelessWidget {
         side: BorderSide(width: _getBorderWidth(), color: _getBorderColor()),
         elevation: 0,
         minimumSize: const Size.fromHeight(40),
-        shape: RoundedRectangleBorder(
-            borderRadius: bRadius ?? BorderRadius.circular(8)),
-        disabledBackgroundColor:
-            disabledColor ?? ConstantColors.white.withOpacity(0.5));
+        shape: RoundedRectangleBorder(borderRadius: bRadius ?? BorderRadius.circular(8)),
+        disabledBackgroundColor: disabledColor ?? ConstantColors.white.withOpacity(0.5));
     return Container(
       padding: EdgeInsets.zero,
       margin: margin ?? const EdgeInsets.only(bottom: 10),
       width: width ?? 285,
       height: height ?? 50,
-      child:
-          ElevatedButton(onPressed: onPressed, style: style, child: _child()),
+      child: ElevatedButton(onPressed: onPressed, style: style, child: _child()),
     );
   }
 
   Widget _child() {
     if (text != null) {
-      return CustomText(
-        text,
-        color: _getTextColor(),
-        alignment: Alignment.center,
-        fontSize: fontSize ?? 16,
-        fontWeight: fontWeight ?? FontWeight.w500,
-      );
+      return loading == true
+          ? const CircularProgressIndicator(
+              strokeWidth: 1,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            )
+          : CustomText(
+              text,
+              color: _getTextColor(),
+              alignment: Alignment.center,
+              fontSize: fontSize ?? 16,
+              fontWeight: fontWeight ?? FontWeight.w500,
+            );
     } else {
       return Container();
     }
@@ -79,11 +83,9 @@ class Button extends StatelessWidget {
       case ButtonType.defaultButton:
         return color ?? ConstantColors.primary;
       case ButtonType.borderedButton:
-        return ConstantColors
-            .white; // You can customize this color for bordered buttons
+        return ConstantColors.white; // You can customize this color for bordered buttons
       case ButtonType.textButton:
-        return Colors
-            .transparent; // You can customize this color for text buttons
+        return Colors.transparent; // You can customize this color for text buttons
     }
   }
 
@@ -92,9 +94,7 @@ class Button extends StatelessWidget {
   }
 
   Color _getBorderColor() {
-    return type == ButtonType.borderedButton
-        ? (color ?? ConstantColors.grey)
-        : Colors.transparent;
+    return type == ButtonType.borderedButton ? (color ?? ConstantColors.grey) : Colors.transparent;
   }
 
   Color _getTextColor() {
@@ -102,8 +102,7 @@ class Button extends StatelessWidget {
       case ButtonType.defaultButton:
         return ConstantColors.white;
       case ButtonType.borderedButton:
-        return ConstantColors
-            .primary; // Customize this color for bordered buttons
+        return ConstantColors.primary; // Customize this color for bordered buttons
       case ButtonType.textButton:
         return Colors.white; // Customize this color for text buttons
     }

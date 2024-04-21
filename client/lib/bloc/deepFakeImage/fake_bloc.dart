@@ -27,15 +27,14 @@ Future<void> _fakeSwap(FakeImageEvent event, Emitter<FakeState> emit) async {
   }
 }
 
-Future<void> _detectImage(
-    DetectImageEvent event, Emitter<FakeState> emit) async {
+Future<void> _detectImage(DetectImageEvent event, Emitter<FakeState> emit) async {
   try {
     emit(FakeLoading());
     var res = await ApiManager.detectImage(event.request);
     print(res);
     if (res != null) {
       print('null');
-      if (res.status == ResponseCode.Success) {
+      if (res.code == ResponseCode.Success) {
         emit(DetectImageSuccess(response: res));
       } else {
         emit(DetectImageFailure(message: "Failed to detect image"));
@@ -57,7 +56,7 @@ class FakeImageEvent extends FakeEvent {
 }
 
 class DetectImageEvent extends FakeEvent {
-  final DetectModelRequest request;
+  final DetectionModalRequest request;
   DetectImageEvent({required this.request});
 }
 //states
@@ -77,7 +76,7 @@ class FakeImageFailure extends FakeState {
 }
 
 class DetectImageSuccess extends FakeState {
-  final DetectModal response;
+  final DetectionModalResponse response;
   DetectImageSuccess({required this.response});
 }
 

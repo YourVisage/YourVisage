@@ -1,9 +1,10 @@
 import 'package:client/helpers/func.dart';
 
 class ApiHelper {
-  // static const String baseUrl = 'http://192.168.2.52:3333/'; // Test/
-  static const String baseUrl = 'http://192.168.1.249:8000/'; // Production/
-  // static const String baseUrl = 'http://192.168.1.209:3000/'; // Local/
+  // static const String baseUrl = 'http://127.0.0.1:8000/'; // ios/ local
+  // static const String baseUrl = 'http://10.0.2.2:8000/'; // android/ local
+
+  static const String baseUrl = 'http://172.20.10.4:8000/';
 
   static Map<String, String> getHttpHeaders() {
     var headers = <String, String>{};
