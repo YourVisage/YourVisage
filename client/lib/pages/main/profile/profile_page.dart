@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'dart:typed_data';
 
 import 'package:client/bloc/userBloc.dart';
 import 'package:client/component/bottom_navigation.dart';
@@ -8,11 +10,9 @@ import 'package:client/helpers/application.dart';
 import 'package:client/model/login_model.dart';
 import 'package:client/model/userinfo_model.dart';
 import 'package:client/provider/globals.dart';
-import 'package:client/router/router_path.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
-import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -29,6 +29,8 @@ class _ProfilePageState extends State<ProfilePage> {
   LoginUserResponse? login;
   UserinfoResponse? userInfo;
   String? profile;
+  String? generatedImages;
+  Uint8List? generated;
 
   @override
   void initState() {
@@ -40,6 +42,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _getSavedImageData() async {
     profile = await application.getProfileImage();
+    generatedImages = await application.getGeneratedImage();
+    generated = base64Decode(generatedImages!.split(',').last);
     setState(() {}); // Update state to trigger a rebuild
   }
 
@@ -83,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navkey.navkey.currentState?.pushNamedAndRemoveUntil(RouterPath.login, (route) => false);
+                          globals.clear();
                         },
                         child: Container(
                           margin: const EdgeInsets.all(20),
@@ -125,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         color: ConstantColors.primary,
                       ),
                     ),
-                    profile != null
+                    profile!.isNotEmpty
                         ? Positioned(
                             top: 20,
                             left: 20,
@@ -175,41 +179,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       Row(
                         children: [
-                          Container(
-                            width: 150,
-                            height: 200,
-                            decoration: BoxDecoration(color: ConstantColors.white),
-                          ),
-                          SizedBox(
-                            width: 50,
-                          ),
-                          Container(
-                            width: 150,
-                            height: 200,
-                            decoration: BoxDecoration(color: ConstantColors.white),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      Row(
-                        children: [
-                          profile != null
+                          generated!.isNotEmpty
                               ? Container(
                                   width: 150,
                                   height: 200,
                                   decoration: BoxDecoration(color: ConstantColors.white),
                                   child: Image.memory(
-                                    base64Decode(profile!),
+                                    generated!,
                                     fit: BoxFit.cover,
                                   ),
                                 )
-                              : Container(
-                                  width: 150,
-                                  height: 200,
-                                  decoration: BoxDecoration(color: ConstantColors.white),
-                                )
+                              : Container()
                         ],
                       ),
                     ],

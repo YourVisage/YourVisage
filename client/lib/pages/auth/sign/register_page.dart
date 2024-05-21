@@ -70,10 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
   void _pickImageFromCamera() async {
     SignInRequest request = SignInRequest()
       ..email = _emailController.text
-      ..name = _nameController.text
-      ..password = _passwordController.text
-      ..repassword = _repasswordController.text;
-    // ..imageUrl = base64Image;
+      ..name = _nameController.text;
     context.read<AuthBloc>().add(RegisterEvent(request: request));
   }
 
@@ -101,6 +98,10 @@ class _RegisterPageState extends State<RegisterPage> {
         builder: (context, state) {
           return CustomScaffold(
             padding: EdgeInsets.symmetric(horizontal: 33),
+            appBar: AppBar(
+              backgroundColor: ConstantColors.black,
+              foregroundColor: ConstantColors.white,
+            ),
             body: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -118,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 CustomTextInput(
                   controller: _nameController,
-                  hintText: AppText.emailHint,
+                  hintText: AppText.userlHint,
                   color: ConstantColors.white,
                 ),
                 const SizedBox(
@@ -133,30 +134,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   hintText: AppText.emailHint,
                   color: ConstantColors.white,
                 ),
-                const SizedBox(
-                  height: 17,
-                ),
-                const CustomText(
-                  'password',
-                  color: ConstantColors.grey,
-                ),
-                CustomTextInput(
-                  controller: _passwordController,
-                  hintText: 'password',
-                  color: ConstantColors.white,
-                ),
-                const SizedBox(
-                  height: 17,
-                ),
-                const CustomText(
-                  'repassword',
-                  color: ConstantColors.grey,
-                ),
-                CustomTextInput(
-                  controller: _repasswordController,
-                  hintText: AppText.emailHint,
-                  color: ConstantColors.white,
-                ),
               ],
             ),
             floatingActionButton: _isLoading
@@ -165,17 +142,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     margin: const EdgeInsets.all(20),
                     child: Button(
                       onPressed: () async {
-                        // String base64Image = base64Encode(pickedFile!.readAsBytesSync());
-
-                        // await _pickImages(ImageSource.gallery);
-
-                        // SignInRequest request = SignInRequest()
-                        //   ..email = _emailController.text
-                        //   ..name = _nameController.text
-                        //   ..password = _passwordController.text
-                        //   ..repassword = _repasswordController.text
-                        //   ..imageUrl = base64Image;
-                        // context.read<AuthBloc>().add(RegisterEvent(request: request));
                         _pickImageFromCamera();
                       },
                       text: AppText.create,

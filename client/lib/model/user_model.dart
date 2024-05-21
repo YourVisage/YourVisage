@@ -4,15 +4,11 @@ import 'package:client/api/base_response.dart';
 class SignInRequest extends BaseRequest {
   String? name;
   String? email;
-  String? password;
-  String? repassword;
   String? imageUrl;
 
   SignInRequest({
     this.name,
     this.email,
-    this.password,
-    this.repassword,
     this.imageUrl,
   });
 
@@ -20,8 +16,6 @@ class SignInRequest extends BaseRequest {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     data['email'] = this.email;
-    data['password'] = this.password;
-    data['repassword'] = this.repassword;
     data['image_url'] = this.imageUrl;
     return data;
   }

@@ -1,5 +1,6 @@
 import 'package:client/api/api_helper.dart';
 import 'package:client/api/api_manager.dart';
+import 'package:client/helpers/application.dart';
 import 'package:client/helpers/shared_pref.dart';
 import 'package:client/model/login_model.dart';
 import 'package:client/model/user_model.dart';
@@ -34,6 +35,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (res.code == ResponseCode.Success) {
         SharedPref.setSessionToken(res.accessToken);
         globals.login = res;
+        await application.setSessionToken(res.accessToken ?? '');
+        print('globals.login :: ${globals.login}');
         emit(LoginUserSuccess(res));
       } else if (res.code == ResponseCode.Error) {
         emit(LoginUserFailed(message: res.message ?? ''));

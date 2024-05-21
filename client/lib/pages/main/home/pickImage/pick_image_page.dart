@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:client/api/api_helper.dart';
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/text.dart';
+import 'package:client/helpers/application.dart';
 import 'package:client/router/router_path.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
@@ -11,6 +16,7 @@ import 'package:client/static/constant.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PickImagePage extends StatefulWidget {
   final File? initialImage;
@@ -22,10 +28,17 @@ class PickImagePage extends StatefulWidget {
 class _PickImagePageState extends State<PickImagePage> {
   File? pickedFile;
   File? resultImage;
-  bool isLoading = false;
+  ValueNotifier<bool> isLoading = ValueNotifier<bool>(false);
   String _returnImage = '';
+  String pickedImages = '';
+  Uint8List? pickedimage;
+  File? tempFile;
+
   Future<void> _pickImages(ImageSource source) async {
+    pickedImages = await application.getProfileImage();
+    pickedimage = base64Decode(pickedImages!.split(',').last);
     final XFile? returnImage = await ImagePicker().pickImage(source: source);
+    tempFile = await _writeBytesToTempFile(pickedimage!);
 
     if (returnImage == null) {
       return;
@@ -36,28 +49,34 @@ class _PickImagePageState extends State<PickImagePage> {
     });
   }
 
-  Future<void> _pickImageFromCamera() async {
-    await _pickImages(ImageSource.camera);
+  Future<File> _writeBytesToTempFile(Uint8List bytes) async {
+    // Get the temporary directory on the device
+    Directory tempDir = await getTemporaryDirectory();
+
+    // Create a temporary file path
+    String tempFilePath = '${tempDir.path}/temp_image.jpg';
+
+    // Write the bytes to the temporary file
+    File tempFile = File(tempFilePath);
+    await tempFile.writeAsBytes(bytes);
+
+    return tempFile;
   }
 
-  Future<void> _pickImageFromGallery() async {
-    await _pickImages(ImageSource.gallery);
-    setState(() {
-      isLoading = true; // Start showing the loader
-    });
+  Future<void> _pickImageFromCamera() async {
+    await _pickImages(ImageSource.camera);
+    isLoading.value = true;
 
     try {
       final dio = Dio();
       final formData = FormData.fromMap({
-        'face_to_swap': await MultipartFile.fromFile(widget.initialImage!.path),
+        'face_to_swap': await MultipartFile.fromFile(tempFile!.path),
         'real_image': await MultipartFile.fromFile(pickedFile!.path),
       });
       final response = await dio.post(
-        // 'http://10.0.2.2:8000/api/swap-image',
-        'http://172.20.10.4:8000/api/swap-image',
+        '${ApiHelper.baseUrl}api/swap-image',
         data: formData,
       );
-
       print('response: ${response}');
 
       if (response.statusCode == 200) {
@@ -66,10 +85,46 @@ class _PickImagePageState extends State<PickImagePage> {
         final responseData = response.data;
 
         _returnImage = 'data:image/png;base64,' + responseData['result_image'];
-        print('sadasd: $_returnImage');
-        setState(() {
-          isLoading = false; // Hide the loader
-        });
+        await application.setGeneratedImage(_returnImage);
+        isLoading.value = false;
+        Navkey.navkey.currentState?.pushNamed(
+          RouterPath.generatedImage,
+          arguments: {
+            'initialImage': _returnImage,
+          },
+        );
+      } else {
+        print('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    await _pickImages(ImageSource.gallery);
+    isLoading.value = true;
+
+    try {
+      final dio = Dio();
+      final formData = FormData.fromMap({
+        'face_to_swap': await MultipartFile.fromFile(tempFile!.path),
+        'real_image': await MultipartFile.fromFile(pickedFile!.path),
+      });
+      final response = await dio.post(
+        '${ApiHelper.baseUrl}api/swap-image',
+        data: formData,
+      );
+      print('response: ${response}');
+
+      if (response.statusCode == 200) {
+        print('--------------------------------');
+
+        final responseData = response.data;
+
+        _returnImage = 'data:image/png;base64,' + responseData['result_image'];
+        await application.setGeneratedImage(_returnImage);
+        isLoading.value = false;
         Navkey.navkey.currentState?.pushNamed(
           RouterPath.generatedImage,
           arguments: {
@@ -101,7 +156,7 @@ class _PickImagePageState extends State<PickImagePage> {
       ),
       body: Container(
           alignment: Alignment.bottomCenter,
-          child: isLoading
+          child: isLoading.value
               ? const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -117,6 +172,7 @@ class _PickImagePageState extends State<PickImagePage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Button(
+                      loading: isLoading.value,
                       onPressed: () => _pickImageFromCamera(),
                       text: 'Camera',
                       color: ConstantColors.primary.withOpacity(0.8),
@@ -125,6 +181,7 @@ class _PickImagePageState extends State<PickImagePage> {
                       height: 20,
                     ),
                     Button(
+                      loading: isLoading.value,
                       onPressed: () => _pickImageFromGallery(),
                       text: 'Gallery',
                       color: ConstantColors.primary.withOpacity(0.8),

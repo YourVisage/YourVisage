@@ -1,13 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:client/component/button.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/helpers/application.dart';
+import 'package:client/router/router_path.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/colors.dart';
 import 'package:client/static/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:path_provider/path_provider.dart';
 
 class GeneratedImagePage extends StatefulWidget {
   final String? initialImage;
@@ -21,20 +24,39 @@ class GeneratedImagePage extends StatefulWidget {
 }
 
 class _GeneratedImagePageState extends State<GeneratedImagePage> {
-  Future<void> saveImageData(String base64Image) async {
-    final prefs = await application.getSharedPrefs();
-    await prefs.setString('generated_image', base64Image);
+  Uint8List? imageData;
+  @override
+  void initState() {
+    super.initState();
+    imageData = base64Decode(widget.initialImage!.split(',').last);
+  }
+
+  Future<void> saveImageToGallery() async {
+    final result = await ImageGallerySaver.saveImage(imageData!);
+    if (result['isSuccess']) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Зургийг галерейд хадгалсан'),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Зургийг хадгалж чадсангүй'),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final imageData = base64Decode(widget.initialImage!.split(',').last);
+    // imageData = base64Decode(widget.initialImage!.split(',').last);
     return CustomScaffold(
       appBar: AppBar(
         backgroundColor: ConstantColors.black,
         leading: BackButton(
           color: ConstantColors.grey,
-          onPressed: () => Navkey.navkey.currentState?.pop(),
+          onPressed: () => Navkey.navkey.currentState?.pushNamed(RouterPath.homeMain),
         ),
         shape: const Border(
             bottom: BorderSide(
@@ -49,7 +71,7 @@ class _GeneratedImagePageState extends State<GeneratedImagePage> {
                 ? Expanded(
                     flex: 1,
                     child: Image.memory(
-                      imageData,
+                      imageData!,
                       fit: BoxFit.cover,
                     ),
                   )
@@ -57,7 +79,8 @@ class _GeneratedImagePageState extends State<GeneratedImagePage> {
       ),
       floatingActionButton: Button(
         onPressed: () async {
-          String base64image = base64Encode(imageData);
+          saveImageToGallery();
+          String base64image = base64Encode(imageData!);
           await application.setGeneratedImage(base64image);
         },
         text: AppText.save,

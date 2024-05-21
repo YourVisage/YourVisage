@@ -35,4 +35,14 @@ class Application extends Constants {
     final prefs = await getSharedPrefs();
     return prefs.getString('generated_image');
   }
+
+  getSessionToken() async {
+    final SharedPreferences sharedPref = await _sharedPref;
+    return sharedPref.getString(Constants.storageKey + Constants.jwt);
+  }
+
+  setSessionToken(String jwt) async {
+    final SharedPreferences sharedPref = await _sharedPref;
+    sharedPref.setString(Constants.storageKey + Constants.jwt, jwt);
+  }
 }

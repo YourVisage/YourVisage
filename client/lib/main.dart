@@ -6,7 +6,10 @@ import 'package:client/bloc/authBloc.dart';
 import 'package:client/bloc/userBloc.dart';
 import 'package:client/component/text.dart';
 import 'package:client/firebase_options.dart';
+import 'package:client/helpers/application.dart';
+import 'package:client/helpers/shared_pref.dart';
 import 'package:client/pages/auth/login/login_page.dart';
+import 'package:client/pages/main/home/home_page.dart';
 import 'package:client/router/router.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
@@ -30,6 +33,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final token = application.getSessionToken();
+    print('token: $token');
     return MultiBlocProvider(
       providers: [
         BlocProvider<MainBloc>(create: (BuildContext context) => BlocManager.mainBloc),

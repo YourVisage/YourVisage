@@ -8,4 +8,5 @@ class AppText {
   static const String success = 'Амжилттай';
   static const String leave = 'Гарах';
   static const String pickImage = 'зураг дарах';
+  static const String userlHint = 'нэр';
 }

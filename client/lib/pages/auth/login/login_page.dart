@@ -13,11 +13,9 @@ import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
 import 'package:client/static/colors.dart';
 import 'package:client/static/constant.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:image_picker/image_picker.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -28,9 +26,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  FocusNode _focusNode = FocusNode();
+  FocusNode _focusN = FocusNode();
   File? pickedFile;
-  bool _isLoading = false;
   String? email;
   String? password = '';
   LoginUserResponse? loginjwt;
@@ -39,26 +37,12 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     setState(() {
       email = _emailController.text;
-      password = _passwordController.text;
-    });
-  }
-
-  Future<void> _pickImages(ImageSource source) async {
-    final XFile? returnImage = await ImagePicker().pickImage(source: source);
-
-    if (returnImage == null) {
-      return;
-    }
-
-    setState(() {
-      pickedFile = File(returnImage.path);
     });
   }
 
   Future<void> _blocListener(BuildContext context, AuthState state) async {
     if (state is LoginUserSuccess) {
       await Utils().showToastAlert(AppText.success, isAlert: false);
-      // await _pickImages(ImageSource.gallery);
       Navkey.navkey.currentState?.pushNamed(RouterPath.camera, arguments: {
         'initialImage': pickedFile,
       });
@@ -74,131 +58,56 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context, state) {
           return CustomScaffold(
             padding: EdgeInsets.symmetric(horizontal: 33),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  child: SvgPicture.asset(Assets.logo),
-                ),
-                const SizedBox(
-                  height: 27,
-                ),
-                const CustomText(
-                  'email',
-                  color: ConstantColors.grey,
-                ),
-                CustomTextInput(
-                  controller: _emailController,
-                  hintText: AppText.emailHint,
-                  color: ConstantColors.white,
-                ),
-                const SizedBox(height: 26),
-                Button(
-                  loading: state is AuthLoading,
-                  onPressed: () async {
-                    if (_emailController.text.isNotEmpty) {
-                      LoginUserRequest request = LoginUserRequest()..email = _emailController.text;
-                      // ..password = _passwordController.text;
-                      context.read<AuthBloc>().add(UserLoginEvent(request: request));
-                    }
-                  },
-                  text: 'Login',
-                ),
-                const SizedBox(height: 26),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 80.84,
-                      decoration: const ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 0.50,
-                            strokeAlign: BorderSide.strokeAlignCenter,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 17,
-                    ),
-                    const CustomText(
-                      'Or With',
-                      color: ConstantColors.grey,
-                    ),
-                    const SizedBox(
-                      width: 17,
-                    ),
-                    Container(
-                      width: 80.84,
-                      decoration: const ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            width: 0.50,
-                            strokeAlign: BorderSide.strokeAlignCenter,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () => context.read<AuthenticationService>().signInWithGoogle(),
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(width: 1, color: Color(0xFFCDD1E0)),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          child: Image.asset(Assets.googlePng),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 21,
-                      ),
-                      GestureDetector(
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(width: 1, color: Color(0xFFCDD1E0)),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.facebook,
-                            color: Colors.blue,
-                            size: 25,
-                          ),
-                        ),
-                      ),
-                    ],
+            body: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(_focusN);
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    child: SvgPicture.asset(Assets.logo),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navkey.navkey.currentState?.pushNamed(RouterPath.register);
-                  },
-                  child: const CustomText(
-                    AppText.create,
+                  const SizedBox(
+                    height: 27,
+                  ),
+                  const CustomText(
+                    'email',
                     color: ConstantColors.grey,
-                    alignment: Alignment.bottomCenter,
                   ),
-                ),
-              ],
+                  CustomTextInput(
+                    focusNode: _focusNode,
+                    controller: _emailController,
+                    hintText: AppText.emailHint,
+                    color: ConstantColors.white,
+                    onFocusChanged: (p0) {},
+                  ),
+                  const SizedBox(height: 26),
+                  Button(
+                    loading: state is AuthLoading,
+                    onPressed: () async {
+                      if (_emailController.text.isNotEmpty) {
+                        LoginUserRequest request = LoginUserRequest()..email = _emailController.text;
+                        context.read<AuthBloc>().add(UserLoginEvent(request: request));
+                      }
+                    },
+                    text: 'Нэвтрэх',
+                  ),
+                  const SizedBox(height: 26),
+                  GestureDetector(
+                    onTap: () {
+                      Navkey.navkey.currentState?.pushNamed(RouterPath.register);
+                    },
+                    child: const CustomText(
+                      AppText.create,
+                      color: ConstantColors.grey,
+                      alignment: Alignment.bottomCenter,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         });
@@ -207,7 +116,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
 }

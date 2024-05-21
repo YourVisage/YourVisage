@@ -20,72 +20,73 @@ class CameraPage extends StatefulWidget {
 }
 
 class _CameraPageState extends State<CameraPage> {
-  late CameraController _controller;
+  CameraController? _controller;
   late Future<void> _initializeControllerFuture;
   bool _isFrontCamera = false;
-  late XFile? _pickedFile;
+  XFile? _pickedFile;
   late List<CameraDescription> _cameras;
   LoginUserResponse? login;
 
   @override
   void initState() {
+    super.initState();
     login = globals.login;
     _initializeCamera();
-    super.initState();
     print('jwt token shvv $login');
   }
 
   Future<void> _initializeCamera() async {
     _cameras = await availableCameras();
-
     _controller = CameraController(
       _getCameraToUse(),
       ResolutionPreset.medium,
     );
 
-    _initializeControllerFuture = _controller.initialize();
-
-    _initializeControllerFuture.then((_) {
-      setState(() {});
-    });
+    _initializeControllerFuture = _controller!.initialize();
+    setState(() {}); // Trigger a rebuild to start showing the FutureBuilder
   }
 
   CameraDescription _getCameraToUse() {
-    if (_isFrontCamera) {
-      return _cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.front);
-    } else {
-      return _cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.back);
-    }
+    return _isFrontCamera
+        ? _cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.front)
+        : _cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.back);
   }
 
   void _toggleCameraDirection() async {
+    if (_controller != null) {
+      await _controller!.dispose();
+    }
+
     setState(() {
       _isFrontCamera = !_isFrontCamera;
     });
+
     _controller = CameraController(
       _getCameraToUse(),
       ResolutionPreset.medium,
     );
-    _initializeControllerFuture = _controller.initialize();
-    _initializeControllerFuture.then((_) {
-      setState(() {});
-    });
+
+    _initializeControllerFuture = _controller!.initialize();
+    setState(() {});
   }
 
   void _takePicture() async {
     try {
-      final XFile file = await _controller.takePicture();
-      setState(() {
-        _pickedFile = file;
-      });
-      print('filuud: ${_pickedFile?.path}');
-      if (_pickedFile != null) {
-        File imageFile = File(_pickedFile!.path);
-        Navkey.navkey.currentState?.pushNamed(RouterPath.homeMain, arguments: {
-          'initialImage': imageFile,
+      await _initializeControllerFuture; // Ensure the controller is initialized before taking a picture
+      if (_controller != null && _controller!.value.isInitialized) {
+        final XFile file = await _controller!.takePicture();
+        setState(() {
+          _pickedFile = file;
         });
-        final bytes = await _pickedFile!.readAsBytes();
-        await application.setProfileImage(base64Encode(bytes));
+        print('filuud: ${_pickedFile?.path}');
+        if (_pickedFile != null) {
+          File imageFile = File(_pickedFile!.path);
+          Navkey.navkey.currentState?.pushNamed(RouterPath.homeMain, arguments: {
+            'initialImage': imageFile,
+          });
+          final bytes = await _pickedFile!.readAsBytes();
+          await application.setProfileImage(base64Encode(bytes));
+        }
       }
     } catch (e) {
       print(e);
@@ -95,40 +96,52 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-        floatingActionButton: Container(
-          margin: const EdgeInsets.all(10),
-          child: Button(
-            onPressed: _takePicture,
-            text: AppText.pickImage,
-          ),
+      floatingActionButton: Container(
+        margin: const EdgeInsets.all(10),
+        child: Button(
+          onPressed: _takePicture,
+          text: AppText.pickImage,
         ),
-        body: !_controller.value.isInitialized
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Container(
+      ),
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (_controller != null && _controller!.value.isInitialized) {
+              return Container(
                 alignment: Alignment.center,
-                margin: const EdgeInsets.all(00),
-                child: CameraPreview(_controller,
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: GestureDetector(
-                        onTap: _toggleCameraDirection,
-                        child: Container(
-                          margin: EdgeInsets.all(10),
-                          child: Icon(
-                            Icons.swap_vert_outlined,
-                            color: Colors.white,
-                          ),
+                margin: const EdgeInsets.all(0),
+                child: CameraPreview(
+                  _controller!,
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: GestureDetector(
+                      onTap: _toggleCameraDirection,
+                      child: Container(
+                        margin: EdgeInsets.all(10),
+                        child: Icon(
+                          Icons.swap_vert_outlined,
+                          color: Colors.white,
                         ),
                       ),
-                    )),
-              ));
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              return const Center(child: Text("Camera not initialized"));
+            }
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 }

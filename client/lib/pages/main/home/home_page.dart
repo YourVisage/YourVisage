@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:client/component/bottom_navigation.dart';
 import 'package:client/component/card.dart';
 import 'package:client/component/custom_scaffold.dart';
 import 'package:client/component/text.dart';
+import 'package:client/helpers/application.dart';
 import 'package:client/router/router_path.dart';
 import 'package:client/static/app_text.dart';
 import 'package:client/static/assets.dart';
@@ -20,9 +22,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String? profile;
+
   @override
   void initState() {
     super.initState();
+    _getSavedImageData();
+    setState(() {});
+  }
+
+  Future<void> _getSavedImageData() async {
+    profile = await application.getProfileImage();
+    setState(() {});
   }
 
   @override
@@ -46,9 +57,22 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
-                  GestureDetector(
-                    child: Image.asset(Assets.profile1),
-                  ),
+                  profile!.isNotEmpty
+                      ? GestureDetector(
+                          child: Container(
+                            margin: const EdgeInsets.only(right: 20),
+                            child: ClipOval(
+                              child: Image.memory(
+                                base64Decode(profile!),
+                                cacheHeight: 50,
+                                cacheWidth: 50,
+                              ),
+                            ),
+                          ),
+                        )
+                      : GestureDetector(
+                          child: Image.asset(Assets.profile1),
+                        ),
                 ],
               ),
             ),
